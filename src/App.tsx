@@ -565,6 +565,20 @@ function App() {
               </div>
             </div>
           </div>
+
+          {/* Add Learn More button - Moved to left side */}
+          <button
+            onClick={() => setShowEducationalContent(true)}
+            className="fixed bottom-4 left-4 p-3 bg-purple-600 hover:bg-purple-700 text-white rounded-full shadow-lg transition-colors duration-300 z-50"
+            aria-label="Learn about fortune telling methods"
+          >
+            <BookOpen className="w-6 h-6" />
+          </button>
+
+          {/* Educational Content Modal */}
+          {showEducationalContent && (
+            <EducationalContent onClose={() => setShowEducationalContent(false)} />
+          )}
         </div>
 
         {/* Modals */}
@@ -622,20 +636,6 @@ function App() {
             </motion.div>
           )}
         </AnimatePresence>
-
-        {/* Add Learn More button */}
-        <button
-          onClick={() => setShowEducationalContent(true)}
-          className="fixed bottom-4 right-4 p-3 bg-purple-600 hover:bg-purple-700 text-white rounded-full shadow-lg transition-colors duration-300 z-50"
-          aria-label="Learn about fortune telling methods"
-        >
-          <BookOpen className="w-6 h-6" />
-        </button>
-
-        {/* Educational Content Modal */}
-        {showEducationalContent && (
-          <EducationalContent onClose={() => setShowEducationalContent(false)} />
-        )}
       </div>
     </div>
   );
