@@ -80,70 +80,67 @@ const getRandomFortune = async (category: 'all' | 'love' | 'career' | 'health' |
 // Loading screen component
 const LoadingScreen = ({ theme }: { theme: Theme }) => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4"
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-8"
          style={{ 
            background: `linear-gradient(to bottom right, #9b2c2c, #7f1d1d, black)`
          }}>
-      <div className="w-full max-w-lg mx-auto p-8 rounded-2xl backdrop-blur-md bg-black/40 border-4 shadow-2xl"
-           style={{ 
-             borderColor: theme.colors.primary,
-             boxShadow: `0 25px 50px -12px ${theme.colors.primary}40`
-           }}>
+      <div className="w-full max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center"
+          transition={{ duration: 0.8 }}
+          className="relative"
         >
-          <h2 className="text-4xl font-serif mb-6 font-bold drop-shadow-lg tracking-wide"
-              style={{ color: theme.colors.primary }}>
-            Ancient Fortune Teller
-          </h2>
-          <p className="mb-8 text-xl font-medium"
-             style={{ color: theme.colors.text }}>
-            Summoning ancient wisdom...
-          </p>
-          
-          <div className="relative flex justify-center items-center">
-            {/* Main spinner */}
-            <motion.div
-              className="w-28 h-28 border-8 rounded-full"
-              style={{ 
-                borderColor: `${theme.colors.primary}20`,
-                borderTopColor: theme.colors.primary
-              }}
-              animate={{ rotate: 360 }}
-              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-            />
+          <div className="absolute inset-0 bg-black/50 rounded-3xl backdrop-blur-sm" />
+          <div className="relative p-6 sm:p-8">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-6 text-white">
+              Cosmic Fortune
+            </h1>
+            <p className="text-lg sm:text-xl text-center mb-8 text-white/90">
+              Discover your destiny through ancient wisdom
+            </p>
             
-            {/* Inner spinner */}
-            <motion.div
-              className="absolute w-16 h-16 border-6 rounded-full"
-              style={{ 
-                borderColor: `${theme.colors.text}30`,
-                borderTopColor: theme.colors.text
-              }}
-              animate={{ rotate: -360 }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-            />
+            <div className="relative flex justify-center items-center">
+              {/* Main spinner */}
+              <motion.div
+                className="w-28 h-28 border-8 rounded-full"
+                style={{ 
+                  borderColor: `${theme.colors.primary}20`,
+                  borderTopColor: theme.colors.primary
+                }}
+                animate={{ rotate: 360 }}
+                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+              />
+              
+              {/* Inner spinner */}
+              <motion.div
+                className="absolute w-16 h-16 border-6 rounded-full"
+                style={{ 
+                  borderColor: `${theme.colors.text}30`,
+                  borderTopColor: theme.colors.text
+                }}
+                animate={{ rotate: -360 }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+              />
+              
+              {/* Center dot */}
+              <div className="absolute w-6 h-6 rounded-full shadow-lg"
+                   style={{ 
+                     backgroundColor: theme.colors.primary,
+                     boxShadow: `0 4px 6px -1px ${theme.colors.primary}50`
+                   }}></div>
+            </div>
             
-            {/* Center dot */}
-            <div className="absolute w-6 h-6 rounded-full shadow-lg"
-                 style={{ 
-                   backgroundColor: theme.colors.primary,
-                   boxShadow: `0 4px 6px -1px ${theme.colors.primary}50`
-                 }}></div>
+            <motion.p
+              className="mt-8 text-lg italic"
+              style={{ color: `${theme.colors.text}80` }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0, 1, 0.8, 1] }}
+              transition={{ delay: 1, duration: 3, repeat: Infinity }}
+            >
+              The cards of fate are aligning...
+            </motion.p>
           </div>
-          
-          <motion.p
-            className="mt-8 text-lg italic"
-            style={{ color: `${theme.colors.text}80` }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 1, 0.8, 1] }}
-            transition={{ delay: 1, duration: 3, repeat: Infinity }}
-          >
-            The cards of fate are aligning...
-          </motion.p>
         </motion.div>
       </div>
       
