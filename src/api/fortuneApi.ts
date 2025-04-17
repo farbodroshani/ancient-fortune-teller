@@ -69,58 +69,11 @@ interface EnhancedFortune extends Fortune {
   };
 }
 
-// Type for lunar phase
-interface LunarPhase {
-  name: string;
-  influence: string;
-}
-
-// Type for lunar day
-interface LunarDay {
-  day: number;
-  influence: string;
-}
-
-// Type for zodiac sign
-interface ZodiacSign {
-  name: string;
-  element: string;
-  traits: string[];
-  compatible: string[];
-}
-
-// Type for lucky element
-interface LuckyElement {
-  name: string;
-  meaning: string;
-  element: string;
-}
-
-// Type for lucky number
-interface LuckyNumber {
-  number: number;
-  meaning: string;
-  element: string;
-}
-
-// Type for lucky time
-interface LuckyTime {
-  time: string;
-  meaning: string;
-  element: string;
-}
-
-// Type for lucky direction
-interface LuckyDirection {
-  name: string;
-  meaning: string;
-  element: string;
-}
-
 // Base URLs for the APIs
 const TAROT_API = 'https://rws-cards-api.herokuapp.com/api/v1/cards/random';
 const ICHING_API = 'https://iching-api.herokuapp.com/api/hexagrams/random';
 const ASTROLOGY_API = 'https://horoscope-api.herokuapp.com/horoscope/today';
+const NUMEROLOGY_API = 'https://api.numerology.com/v1/calculate';
 
 // Cache and rate limiting configuration
 const CACHE_DURATION = 30 * 1000; // 30 seconds
@@ -177,7 +130,7 @@ const elements = {
     { name: 'waning gibbous', influence: 'gratitude, sharing, teaching' },
     { name: 'last quarter', influence: 'release, forgiveness, letting go' },
     { name: 'waning crescent', influence: 'rest, reflection, preparation' }
-  ] as LunarPhase[],
+  ],
   lunarDays: [
     { day: 1, influence: 'New beginnings and fresh starts' },
     { day: 2, influence: 'Partnerships and relationships' },
@@ -251,12 +204,12 @@ const elements = {
     ],
     times: [
       { time: 'dawn', meaning: 'new beginnings, fresh starts', element: 'wood' },
-      { time: 'morning', meaning: 'growth, action, progress', element: 'fire' },
-      { time: 'noon', meaning: 'peak energy, achievement', element: 'fire' },
-      { time: 'afternoon', meaning: 'stability, maintenance', element: 'earth' },
-      { time: 'dusk', meaning: 'transition, reflection', element: 'metal' },
-      { time: 'evening', meaning: 'relationships, harmony', element: 'water' },
-      { time: 'night', meaning: 'rest, intuition, dreams', element: 'water' },
+      { time: 'morning', meaning: 'growth, activity, expansion', element: 'fire' },
+      { time: 'noon', meaning: 'peak energy, achievement', element: 'earth' },
+      { time: 'afternoon', meaning: 'stability, maintenance', element: 'metal' },
+      { time: 'dusk', meaning: 'completion, reflection', element: 'water' },
+      { time: 'evening', meaning: 'relaxation, connection', element: 'water' },
+      { time: 'night', meaning: 'rest, regeneration', element: 'water' },
       { time: 'midnight', meaning: 'transformation, mystery', element: 'water' }
     ]
   }
@@ -1146,43 +1099,121 @@ function generateFengShuiAdvice(): EnhancedFortune['cultural']['fengShui'] {
 }
 
 // Calculate Dharma number based on name, birth date, place, and time
-export function calculateDharmaNumber(name: string, birthDate: string, birthPlace: string, birthTime: string): number {
-  const timestamp = Date.now();
-  const seed = name.length + birthDate.length + birthPlace.length + birthTime.length + timestamp;
+export async function calculateDharmaNumber(name: string, birthDate: string, birthPlace: string, birthTime: string): Promise<number> {
+  try {
+    // Check cache first
+    const cacheKey = `${name}-${birthDate}-${birthPlace}-${birthTime}`;
+    const cachedResult = dharmaCache.get(cacheKey);
+    if (cachedResult) {
+      return cachedResult;
+    }
+
+    // Make API call to numerology service
+    const response = await fetch(NUMEROLOGY_API, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // Add your API key here if required
+        // 'Authorization': `Bearer ${process.env.NUMEROLOGY_API_KEY}`
+      },
+      body: JSON.stringify({
+        name,
+        birthDate,
+        birthPlace,
+        birthTime,
+        calculationType: 'dharma'
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to calculate Dharma number');
+    }
+
+    const data = await response.json();
+    const dharmaNumber = data.dharmaNumber;
+
+    // Cache the result
+    dharmaCache.set(cacheKey, dharmaNumber);
+    return dharmaNumber;
+  } catch (error) {
+    console.error('Error calculating Dharma number:', error);
+    // Fallback to local calculation if API fails
+    return calculateLocalDharmaNumber(name, birthDate, birthPlace, birthTime);
+  }
+}
+
+function calculateLocalDharmaNumber(name: string, birthDate: string, birthPlace: string, birthTime: string): number {
+  // Convert name to numbers
+  const nameNumbers = name.toLowerCase().split('').map(char => {
+    const code = char.charCodeAt(0) - 96;
+    return code > 0 && code < 27 ? code : 0;
+  });
+
+  // Convert birth date to numbers
+  const [year, month, day] = birthDate.split('-').map(Number);
   
-  // Calculate name number
-  const nameNumber = name.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0) % 9 || 9;
+  // Convert birth time to numbers
+  const [hours, minutes] = birthTime.split(':').map(Number);
   
-  // Calculate birth date number
-  const dateNumber = birthDate.split('-').reduce((sum, num) => sum + parseInt(num), 0) % 9 || 9;
-  
-  // Calculate place number
-  const placeNumber = birthPlace.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0) % 9 || 9;
-  
-  // Calculate time number
-  const timeNumber = birthTime.split(':').reduce((sum, num) => sum + parseInt(num), 0) % 9 || 9;
-  
-  // Calculate final dharma number
-  const dharmaNumber = (nameNumber + dateNumber + placeNumber + timeNumber) % 9 || 9;
-  
+  // Calculate sum of all numbers
+  const sum = [
+    ...nameNumbers,
+    year, month, day,
+    hours, minutes
+  ].reduce((acc, num) => acc + num, 0);
+
+  // Reduce to single digit
+  let dharmaNumber = sum;
+  while (dharmaNumber > 9) {
+    dharmaNumber = dharmaNumber.toString().split('').reduce((acc, digit) => acc + parseInt(digit), 0);
+  }
+
   return dharmaNumber;
 }
 
-// Get interpretation for a dharma number
-export function getDharmaInterpretation(number: number): string {
-  const interpretations = {
-    1: "You are a natural leader with strong independence and pioneering spirit. Your path involves taking initiative and creating new opportunities.",
-    2: "You are a peacemaker with a gift for diplomacy and cooperation. Your path involves bringing harmony and balance to relationships.",
-    3: "You are creative and expressive with a joyful spirit. Your path involves sharing your artistic talents and spreading optimism.",
-    4: "You are practical and organized with a strong work ethic. Your path involves building stable foundations and maintaining order.",
-    5: "You are adventurous and adaptable with a love for freedom. Your path involves embracing change and exploring new experiences.",
-    6: "You are nurturing and responsible with a healing touch. Your path involves caring for others and creating harmony in your environment.",
-    7: "You are analytical and spiritual with deep intuition. Your path involves seeking wisdom and understanding life's mysteries.",
-    8: "You are ambitious and powerful with a talent for manifestation. Your path involves achieving success and creating abundance.",
-    9: "You are compassionate and humanitarian with universal love. Your path involves serving humanity and completing cycles."
+export async function getDharmaInterpretation(number: number): Promise<string> {
+  try {
+    // Make API call to get interpretation
+    const response = await fetch(`${NUMEROLOGY_API}/interpretation`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // Add your API key here if required
+        // 'Authorization': `Bearer ${process.env.NUMEROLOGY_API_KEY}`
+      },
+      body: JSON.stringify({
+        number,
+        type: 'dharma'
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to get Dharma interpretation');
+    }
+
+    const data = await response.json();
+    return data.interpretation;
+  } catch (error) {
+    console.error('Error getting Dharma interpretation:', error);
+    // Fallback to local interpretation if API fails
+    return getLocalDharmaInterpretation(number);
+  }
+}
+
+function getLocalDharmaInterpretation(number: number): string {
+  const interpretations: Record<number, string> = {
+    1: "Your Dharma path is one of leadership and independence. You are here to pioneer new ideas and inspire others through your courage and determination.",
+    2: "Your Dharma path is one of harmony and cooperation. You are here to bring people together and create balance through your diplomatic nature.",
+    3: "Your Dharma path is one of creativity and self-expression. You are here to bring joy and inspiration to others through your artistic talents.",
+    4: "Your Dharma path is one of stability and organization. You are here to build strong foundations and create order through your practical approach.",
+    5: "Your Dharma path is one of freedom and change. You are here to embrace new experiences and adapt to life's constant evolution.",
+    6: "Your Dharma path is one of nurturing and responsibility. You are here to care for others and create harmony in relationships.",
+    7: "Your Dharma path is one of wisdom and spirituality. You are here to seek truth and share your insights with others.",
+    8: "Your Dharma path is one of abundance and power. You are here to manifest your goals and achieve material success.",
+    9: "Your Dharma path is one of compassion and humanitarianism. You are here to serve others and make a positive impact on the world."
   };
-  
-  return interpretations[number as keyof typeof interpretations] || "Your path is unique and unfolding.";
+
+  return interpretations[number] || "Your Dharma path is unique and evolving. Trust your intuition as you discover your true purpose.";
 }
 
 // Export the enhanced type

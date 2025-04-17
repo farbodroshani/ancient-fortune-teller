@@ -5,30 +5,36 @@ import { FortuneCard } from './components/FortuneCard';
 import { SealButton } from './components/SealButton';
 import { BackgroundSwitcher, backgrounds, preloadImages } from './components/BackgroundSwitcher';
 import { fortunes } from './data/fortunes';
-import { Volume2, VolumeX, Share2, History, Scroll, X } from 'lucide-react';
+import { Volume2, VolumeX, Share2, History, X, BookOpen } from 'lucide-react';
 import { ThemeSelector, themes } from './components/ThemeSelector';
 import { FortuneHistory } from './components/FortuneHistory';
 import type { Fortune, Theme } from './types';
 import { DharmaCalculator } from './components/DharmaCalculator';
 import { fetchRandomFortune } from './api/fortuneApi';
 import { SocialShare } from './components/SocialShare';
+import { EducationalContent } from './components/EducationalContent';
 
-// Sound effects
-const flipSound = new Howl({
-  src: ['https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3'],
-  volume: 0.5,
-});
-
-const successSound = new Howl({
-  src: ['https://assets.mixkit.co/active_storage/sfx/1434/1434-preview.mp3'],
-  volume: 0.4,
-});
-
-// Background ambient music
-const ambientMusic = new Howl({
-  src: ['https://assets.mixkit.co/active_storage/sfx/209/209-preview.mp3'],
-  volume: 0.2,
+// Theme music
+const themeMusic = new Howl({
+  src: ['/assets/audio/theme.mp3'],
+  volume: 0.3,
   loop: true,
+  autoplay: false,
+  onload: () => {
+    console.log('Theme music loaded successfully');
+  },
+  onloaderror: (id, error) => {
+    console.error('Error loading theme music:', error);
+  },
+  onplayerror: (id, error) => {
+    console.error('Error playing theme music:', error);
+  },
+  onplay: () => {
+    console.log('Theme music started playing');
+  },
+  onpause: () => {
+    console.log('Theme music paused');
+  }
 });
 
 // Particle component for visual effects
@@ -203,6 +209,7 @@ function App() {
   const [showHistory, setShowHistory] = useState(false);
   const [showDharmaCalculator, setShowDharmaCalculator] = useState(false);
   const [isGeneratingFortune, setIsGeneratingFortune] = useState(false);
+  const [showEducationalContent, setShowEducationalContent] = useState(false);
 
   // Load background images
   useEffect(() => {
@@ -246,14 +253,33 @@ function App() {
 
   // Handle audio
   useEffect(() => {
-    if (!isMuted) {
-      ambientMusic.play();
-    } else {
-      ambientMusic.pause();
-    }
+    const handleAudio = async () => {
+      try {
+        if (!isMuted) {
+          // Check if the audio is already playing
+          if (!themeMusic.playing()) {
+            // Add a small delay to ensure the audio context is ready
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            try {
+              themeMusic.play();
+              console.log('Theme music started playing');
+            } catch (error) {
+              console.error('Error playing theme music:', error);
+            }
+          }
+        } else {
+          themeMusic.pause();
+          console.log('Theme music paused');
+        }
+      } catch (error) {
+        console.error('Error handling audio:', error);
+      }
+    };
+
+    handleAudio();
 
     return () => {
-      ambientMusic.pause();
+      themeMusic.pause();
     };
   }, [isMuted]);
 
@@ -266,13 +292,9 @@ function App() {
     
     setIsGeneratingFortune(true);
     try {
-      // Create a new date-based seed to ensure we get a different fortune each time
-      const seed = Date.now().toString();
       const newFortune = await getRandomFortune(selectedCategory);
       
-      // If we got the same fortune, try again with a different approach
       if (newFortune.id === fortune.id) {
-        // Force a different category to get a different result
         const categories: Array<'love' | 'career' | 'health' | 'luck'> = ['love', 'career', 'health', 'luck'];
         const differentCategory = categories.find(c => c !== selectedCategory) || 'love';
         const retryFortune = await getRandomFortune(differentCategory);
@@ -282,11 +304,10 @@ function App() {
       }
       
       setIsFlipped(true);
-      flipSound.play();
       
       // Add to history (avoid duplicates)
       if (!fortuneHistory.some(f => f.id === newFortune.id)) {
-        const updatedHistory = [newFortune, ...fortuneHistory].slice(0, 30); // Keep last 30
+        const updatedHistory = [newFortune, ...fortuneHistory].slice(0, 30);
         setFortuneHistory(updatedHistory);
         localStorage.setItem('fortuneHistory', JSON.stringify(updatedHistory));
       }
@@ -295,18 +316,11 @@ function App() {
     } finally {
       setIsGeneratingFortune(false);
     }
-  }, [isGeneratingFortune, selectedCategory, fortune.id, fortuneHistory, flipSound]);
+  }, [isGeneratingFortune, selectedCategory, fortune.id, fortuneHistory]);
 
   const handleFlip = useCallback(() => {
-    // Toggle the flip state
     setIsFlipped(!isFlipped);
-    // Play appropriate sound
-    if (!isFlipped) {
-      flipSound.play();
-    } else {
-      successSound.play();
-    }
-  }, [isFlipped, flipSound, successSound]);
+  }, [isFlipped]);
 
   const nextBackground = () => {
     setCurrentBg((prev) => (prev + 1) % backgrounds.length);
@@ -369,13 +383,17 @@ function App() {
   return (
     <div 
       className="min-h-screen bg-cover bg-center transition-all duration-1000"
-      style={{ backgroundImage: `url(${backgrounds[currentBg]})` }}
+      style={{ 
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${backgrounds[currentBg]})`,
+        backgroundColor: activeTheme.colors.background
+      }}
     >
       <Particles />
       
       <div className={`min-h-screen backdrop-blur-sm flex flex-col items-center justify-center p-4 relative`}
-           style={{ backgroundColor: `rgba(${activeTheme.id === 'classic' ? '0, 0, 0' : '30, 20, 60'}, 0.75)` }}
-      >
+           style={{ 
+             backgroundColor: `rgba(${activeTheme.id === 'classic' ? '0, 0, 0' : '30, 20, 60'}, 0.5)`
+           }}>
         {/* Main content container */}
         <div className="w-full max-w-5xl mx-auto p-4 sm:p-6 rounded-lg backdrop-blur-sm border-2 shadow-lg"
              style={{ 
@@ -548,63 +566,77 @@ function App() {
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Modals */}
-      <FortuneHistory 
-        fortunes={fortuneHistory} 
-        isOpen={showHistory} 
-        onClose={toggleHistory} 
-        onSelectFortune={selectFromHistory} 
-        theme={activeTheme}
-      />
-      
-      {/* Share modal */}
-      <AnimatePresence>
-        {showShareModal && (
-          <motion.div 
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-30"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setShowShareModal(false)}
-          >
+        {/* Modals */}
+        <FortuneHistory 
+          fortunes={fortuneHistory} 
+          isOpen={showHistory} 
+          onClose={toggleHistory} 
+          onSelectFortune={selectFromHistory} 
+          theme={activeTheme}
+        />
+        
+        {/* Share modal */}
+        <AnimatePresence>
+          {showShareModal && (
             <motion.div 
-              className="bg-black/90 border rounded-lg p-6 max-w-md w-11/12 shadow-2xl"
-              style={{ borderColor: `${activeTheme.colors.primary}50` }}
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              onClick={e => e.stopPropagation()}
+              className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-30"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowShareModal(false)}
             >
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-2xl font-serif" style={{ color: activeTheme.colors.primary }}>
-                  Share Your Fortune
-                </h3>
-                <motion.button
-                  className="text-gray-400 hover:text-white p-1 rounded-full hover:bg-gray-800"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => setShowShareModal(false)}
-                >
-                  <X size={20} />
-                </motion.button>
-              </div>
-              
-              <div className="bg-black/80 rounded-lg p-4 mb-4 border border-white/10">
-                <p className="text-xl font-serif text-center mb-2"
-                   style={{ color: activeTheme.colors.primary }}>
-                  {fortune.chinese}
-                </p>
-                <p className="text-white text-center">{fortune.english}</p>
-                <p className="text-white/90 text-center italic text-sm mt-2">{fortune.interpretation}</p>
-              </div>
-              
-              <SocialShare fortune={fortune} theme={activeTheme} />
+              <motion.div 
+                className="bg-black/90 border rounded-lg p-6 max-w-md w-11/12 shadow-2xl"
+                style={{ borderColor: `${activeTheme.colors.primary}50` }}
+                initial={{ scale: 0.9, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.9, y: 20 }}
+                onClick={e => e.stopPropagation()}
+              >
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-2xl font-serif" style={{ color: activeTheme.colors.primary }}>
+                    Share Your Fortune
+                  </h3>
+                  <motion.button
+                    className="text-gray-400 hover:text-white p-1 rounded-full hover:bg-gray-800"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => setShowShareModal(false)}
+                  >
+                    <X size={20} />
+                  </motion.button>
+                </div>
+                
+                <div className="bg-black/80 rounded-lg p-4 mb-4 border border-white/10">
+                  <p className="text-xl font-serif text-center mb-2"
+                     style={{ color: activeTheme.colors.primary }}>
+                    {fortune.chinese}
+                  </p>
+                  <p className="text-white text-center">{fortune.english}</p>
+                  <p className="text-white/90 text-center italic text-sm mt-2">{fortune.interpretation}</p>
+                </div>
+                
+                <SocialShare fortune={fortune} theme={activeTheme} />
+              </motion.div>
             </motion.div>
-          </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Add Learn More button */}
+        <button
+          onClick={() => setShowEducationalContent(true)}
+          className="fixed bottom-4 right-4 p-3 bg-purple-600 hover:bg-purple-700 text-white rounded-full shadow-lg transition-colors duration-300 z-40"
+          aria-label="Learn about fortune telling methods"
+        >
+          <BookOpen className="w-6 h-6" />
+        </button>
+
+        {/* Educational Content Modal */}
+        {showEducationalContent && (
+          <EducationalContent onClose={() => setShowEducationalContent(false)} />
         )}
-      </AnimatePresence>
+      </div>
     </div>
   );
 }
