@@ -366,7 +366,7 @@ function App() {
   return (
     <div 
       className="min-h-screen bg-cover bg-center transition-all duration-1000"
-      style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/background.jpg)` }}
+      style={{ backgroundImage: `url(${backgrounds[currentBg]})` }}
     >
       <Particles />
       

@@ -13,7 +13,7 @@
       sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-image: url('./assets/background.jpg');
+    background: linear-gradient(to bottom right, #9b2c2c, #7f1d1d, black);
     background-size: cover;
     background-position: center;
     background-attachment: fixed;

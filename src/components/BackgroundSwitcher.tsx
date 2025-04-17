@@ -5,9 +5,9 @@ import type { Theme } from '../types';
 
 // Import all backgrounds with direct strings
 export const backgrounds = [
-  '/src/assets/BG/a-traditional-chinese-ink-wash-painting-_t6lvVzJbTjagVYgggPScXQ_hM2wUBuQQMWwLfMhSAhFGA.jpeg',
-  '/src/assets/BG/a-traditional-chinese-ink-wash-painting-_aNk3-BFlTgaM-2nqPbA42Q_hM2wUBuQQMWwLfMhSAhFGA.jpeg',
-  '/src/assets/BG/a-traditional-chinese-ink-wash-painting-_-9n67ewWT9WnB4JpbjpL3A_BzLyim24RAKwTGJ6NsLWxA.jpeg'
+  '/background1.jpg',
+  '/background2.jpg',
+  '/background3.jpg'
 ];
 
 // Simplified preload function with basic preloading
