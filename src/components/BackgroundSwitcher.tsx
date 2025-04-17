@@ -5,18 +5,30 @@ import type { Theme } from '../types';
 
 // Import all backgrounds with direct strings
 export const backgrounds = [
-  '/src/assets/BG/a-traditional-chinese-ink-wash-painting-_t6lvVzJbTjagVYgggPScXQ_hM2wUBuQQMWwLfMhSAhFGA.jpeg',
-  '/src/assets/BG/a-traditional-chinese-ink-wash-painting-_aNk3-BFlTgaM-2nqPbA42Q_hM2wUBuQQMWwLfMhSAhFGA.jpeg',
-  '/src/assets/BG/a-traditional-chinese-ink-wash-painting-_-9n67ewWT9WnB4JpbjpL3A_BzLyim24RAKwTGJ6NsLWxA.jpeg'
+  '/assets/BG/a-traditional-chinese-ink-wash-painting-_t6lvVzJbTjagVYgggPScXQ_hM2wUBuQQMWwLfMhSAhFGA.jpeg',
+  '/assets/BG/a-traditional-chinese-ink-wash-painting-_aNk3-BFlTgaM-2nqPbA42Q_hM2wUBuQQMWwLfMhSAhFGA.jpeg',
+  '/assets/BG/a-traditional-chinese-ink-wash-painting-_-9n67ewWT9WnB4JpbjpL3A_BzLyim24RAKwTGJ6NsLWxA.jpeg'
 ];
 
 // Simplified preload function with basic preloading
 export const preloadImages = (): Promise<void> => {
   return new Promise((resolve) => {
-    // Simple timeout to simulate loading
-    setTimeout(() => {
-      resolve();
-    }, 1500);
+    // Preload all background images
+    const imagePromises = backgrounds.map(src => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+      });
+    });
+
+    Promise.all(imagePromises)
+      .then(() => resolve())
+      .catch(error => {
+        console.error("Failed to preload images:", error);
+        resolve(); // Still resolve to allow the app to continue
+      });
   });
 };
 
