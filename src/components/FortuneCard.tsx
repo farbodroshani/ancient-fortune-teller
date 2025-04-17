@@ -57,27 +57,89 @@ export function FortuneCard({ fortune, isFlipped, onFlip, theme }: FortuneCardPr
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5 }}
-      className="w-full max-w-sm mx-auto mb-8"
+    <div 
+      className="relative w-[320px] h-[420px] mx-auto cursor-pointer transform hover:scale-105 transition-transform duration-300" 
+      style={{ perspective: '1500px' }}
+      onClick={onFlip}
     >
-      <div className="relative group">
-        <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg blur opacity-25 group-hover:opacity-100 transition duration-1000 group-hover:duration-200" />
-        <div className="relative p-6 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20">
-          <div className="flex flex-col items-center">
-            <h3 className="text-xl font-bold text-white mb-4">{fortune.chinese}</h3>
-            <p className="text-white/90 text-center mb-4">{fortune.english}</p>
-            <button
-              onClick={onFlip}
-              className="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105"
+      <div className="relative w-full h-full shadow-2xl rounded-xl" style={cardStyle}>
+        {/* Front of card */}
+        <div style={faceStyle}>
+          <div className={`w-full h-full bg-gradient-to-br from-${secondaryColor} to-${secondaryColor}/80 rounded-xl shadow-xl border-4 border-${primaryColor}/70 flex items-center justify-center p-8`}>
+            <motion.div 
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="text-center"
             >
-              Tap to reveal your fortune
-            </button>
+              <div className="flex justify-center mb-6">
+                <Scroll className={`w-28 h-28 text-${primaryColor} drop-shadow-lg`} />
+              </div>
+              <motion.div
+                className={`text-center text-${textColor} text-xl font-bold tracking-wide drop-shadow-md`}
+                initial={{ y: 10, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+              >
+                Tap to reveal your fortune
+              </motion.div>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Back of card */}
+        <div style={backFaceStyle}>
+          <div 
+            className={`w-full h-full bg-cover bg-center rounded-xl shadow-xl border-4 border-${primaryColor}/70 p-6 flex flex-col items-center justify-center overflow-hidden`}
+            style={{ backgroundImage: `url(${cardBackground})` }}
+          >
+            <div className={`bg-black/75 p-6 rounded-lg backdrop-blur-md w-full h-full flex flex-col items-center justify-center border-2 ${categoryStyles.border}`}>
+              <motion.div 
+                className="flex flex-col items-center w-full"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+              >
+                <div className="absolute top-4 right-4">
+                  <div className={`text-sm uppercase font-bold tracking-widest ${categoryStyles.color} bg-black/70 px-3 py-1.5 rounded-full shadow-md`}>
+                    {fortune.category}
+                  </div>
+                </div>
+                
+                <div className="w-full relative mb-4 mt-2">
+                  <div className="absolute -left-1 -top-1">
+                    <Star className={`w-6 h-6 fill-${primaryColor} text-${primaryColor} drop-shadow-md`} />
+                  </div>
+                  <div className="absolute -right-1 -top-1">
+                    <Star className={`w-6 h-6 fill-${primaryColor} text-${primaryColor} drop-shadow-md`} />
+                  </div>
+                  <h2 className={`text-5xl font-noto-serif-sc text-center text-${primaryColor} mb-4 pt-2 font-bold drop-shadow-lg`}>
+                    {fortune.chinese}
+                  </h2>
+                </div>
+                
+                <motion.p 
+                  className={`text-2xl text-${textColor} mb-6 text-center font-bold drop-shadow-md`}
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.4, duration: 0.5 }}
+                >
+                  {fortune.english}
+                </motion.p>
+                
+                <motion.div
+                  className={`w-full p-4 rounded-lg bg-gradient-to-b ${categoryStyles.bgFrom} ${categoryStyles.bgTo} border border-white/20 shadow-inner`}
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.5, duration: 0.5 }}
+                >
+                  <p className="text-lg text-white/95 text-center italic font-medium">{fortune.interpretation}</p>
+                </motion.div>
+              </motion.div>
+            </div>
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

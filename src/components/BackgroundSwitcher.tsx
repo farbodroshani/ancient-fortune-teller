@@ -5,9 +5,9 @@ import type { Theme } from '../types';
 
 // Import all backgrounds with direct strings
 export const backgrounds = [
-  '/background1.jpg',
-  '/background2.jpg',
-  '/background3.jpg'
+  '/src/assets/BG/a-traditional-chinese-ink-wash-painting-_t6lvVzJbTjagVYgggPScXQ_hM2wUBuQQMWwLfMhSAhFGA.jpeg',
+  '/src/assets/BG/a-traditional-chinese-ink-wash-painting-_aNk3-BFlTgaM-2nqPbA42Q_hM2wUBuQQMWwLfMhSAhFGA.jpeg',
+  '/src/assets/BG/a-traditional-chinese-ink-wash-painting-_-9n67ewWT9WnB4JpbjpL3A_BzLyim24RAKwTGJ6NsLWxA.jpeg'
 ];
 
 // Simplified preload function with basic preloading
@@ -34,24 +34,24 @@ export function BackgroundSwitcher({ currentBg, onNext, onPrev, theme }: Backgro
     <div className="fixed bottom-4 right-4 flex items-center space-x-2">
       <motion.button
         onClick={onPrev}
-        className={`bg-black/30 backdrop-blur-sm text-${primaryColor} p-2 rounded-full hover:bg-black/50`}
+        className={`bg-black/30 backdrop-blur-sm text-${primaryColor} p-1.5 sm:p-2 rounded-full hover:bg-black/50`}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
       >
-        <ChevronLeft size={20} />
+        <ChevronLeft size={16} className="sm:w-5 sm:h-5" />
       </motion.button>
       
-      <div className={`text-${primaryColor} bg-black/30 backdrop-blur-sm px-3 py-1 rounded-full text-sm`}>
+      <div className={`text-${primaryColor} bg-black/30 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm`}>
         {currentBg + 1}/{backgrounds.length}
       </div>
       
       <motion.button
         onClick={onNext}
-        className={`bg-black/30 backdrop-blur-sm text-${primaryColor} p-2 rounded-full hover:bg-black/50`}
+        className={`bg-black/30 backdrop-blur-sm text-${primaryColor} p-1.5 sm:p-2 rounded-full hover:bg-black/50`}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
       >
-        <ChevronRight size={20} />
+        <ChevronRight size={16} className="sm:w-5 sm:h-5" />
       </motion.button>
     </div>
   );

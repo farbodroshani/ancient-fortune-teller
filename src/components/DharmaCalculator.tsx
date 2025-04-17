@@ -179,7 +179,7 @@ export function DharmaCalculator({ theme }: DharmaCalculatorProps) {
   };
 
   return (
-    <div className="w-full max-w-lg mx-auto p-6 rounded-xl backdrop-blur-sm border-4 shadow-2xl"
+    <div className="w-full max-w-lg mx-auto p-4 sm:p-6 rounded-xl backdrop-blur-sm border-4 shadow-2xl"
          style={{ 
            borderColor: colors.primary,
            boxShadow: `0 25px 50px -12px ${colors.primary}30`
@@ -189,28 +189,28 @@ export function DharmaCalculator({ theme }: DharmaCalculatorProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7 }}
       >
-        <h2 className="text-4xl font-serif mb-4 text-center font-bold drop-shadow-lg tracking-wide"
+        <h2 className="text-3xl sm:text-4xl font-serif mb-4 text-center font-bold drop-shadow-lg tracking-wide"
             style={{ color: colors.primary }}>
           <span className="inline-block">
-            <Sparkles className="inline-block mr-2 mb-1" size={28} style={{ color: colors.primary }} />
+            <Sparkles className="inline-block mr-2 mb-1" size={24} style={{ color: colors.primary }} />
           </span>
           Discover Your Dharma
           <span className="inline-block">
-            <Sparkles className="inline-block ml-2 mb-1" size={28} style={{ color: colors.primary }} />
+            <Sparkles className="inline-block ml-2 mb-1" size={24} style={{ color: colors.primary }} />
           </span>
         </h2>
         
-        <p className="text-center text-lg font-medium mb-6 max-w-md mx-auto leading-relaxed"
+        <p className="text-center text-base sm:text-lg font-medium mb-4 sm:mb-6 max-w-md mx-auto leading-relaxed"
            style={{ color: colors.text }}>
           Enter your details to reveal your true spiritual path and purpose
         </p>
       </motion.div>
       
-      <div className="space-y-4">
+      <div className="space-y-4 sm:space-y-6">
         <div className="relative">
           <User 
             className="absolute left-4 top-1/2 transform -translate-y-1/2 drop-shadow-md" 
-            size={24} 
+            size={20} 
             style={{ color: colors.primary }} 
           />
           <input
@@ -218,7 +218,7 @@ export function DharmaCalculator({ theme }: DharmaCalculatorProps) {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Your Full Name"
-            className="w-full pl-12 pr-4 py-4 bg-black/60 border-3 rounded-lg text-white focus:outline-none text-lg font-medium shadow-inner"
+            className="w-full pl-12 pr-4 py-3 sm:py-4 bg-black/60 border-3 rounded-lg text-white focus:outline-none text-base sm:text-lg font-medium shadow-inner"
             style={{ 
               borderColor: `${colors.primary}70`,
               // @ts-ignore - focus style is valid
@@ -230,14 +230,14 @@ export function DharmaCalculator({ theme }: DharmaCalculatorProps) {
         <div className="relative">
           <Calendar 
             className="absolute left-4 top-1/2 transform -translate-y-1/2 drop-shadow-md" 
-            size={24} 
+            size={20} 
             style={{ color: colors.primary }} 
           />
           <input
             type="date"
             value={birthDate}
             onChange={(e) => setBirthDate(e.target.value)}
-            className="w-full pl-12 pr-4 py-4 bg-black/60 border-3 rounded-lg text-white focus:outline-none text-lg font-medium shadow-inner"
+            className="w-full pl-12 pr-4 py-3 sm:py-4 bg-black/60 border-3 rounded-lg text-white focus:outline-none text-base sm:text-lg font-medium shadow-inner"
             style={{ 
               borderColor: `${colors.primary}70`,
               // @ts-ignore - focus style is valid
@@ -245,11 +245,11 @@ export function DharmaCalculator({ theme }: DharmaCalculatorProps) {
             }}
           />
         </div>
-        
+
         <div className="relative">
           <Clock 
             className="absolute left-4 top-1/2 transform -translate-y-1/2 drop-shadow-md" 
-            size={24} 
+            size={20} 
             style={{ color: colors.primary }} 
           />
           <input
@@ -257,7 +257,7 @@ export function DharmaCalculator({ theme }: DharmaCalculatorProps) {
             value={birthTime}
             onChange={handleTimeChange}
             placeholder="Time of Birth (24-hour format)"
-            className="w-full pl-12 pr-4 py-4 bg-black/60 border-3 rounded-lg text-white focus:outline-none text-lg font-medium shadow-inner"
+            className="w-full pl-12 pr-4 py-3 sm:py-4 bg-black/60 border-3 rounded-lg text-white focus:outline-none text-base sm:text-lg font-medium shadow-inner"
             style={{ 
               borderColor: `${colors.primary}70`,
               // @ts-ignore - focus style is valid
@@ -272,9 +272,9 @@ export function DharmaCalculator({ theme }: DharmaCalculatorProps) {
           theme={colors}
         />
 
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
           <motion.button
-            className="w-full py-5 mt-6 text-black rounded-lg font-bold text-xl shadow-lg tracking-wide transform transition-all duration-300"
+            className="w-full py-4 sm:py-5 mt-4 sm:mt-6 text-black rounded-lg font-bold text-lg sm:text-xl shadow-lg tracking-wide transform transition-all duration-300"
             style={{ 
               background: `linear-gradient(to right, ${colors.primary}, ${colors.primary}90, ${colors.primary}80)`,
               boxShadow: `0 10px 15px -3px ${colors.primary}30`
@@ -289,7 +289,7 @@ export function DharmaCalculator({ theme }: DharmaCalculatorProps) {
 
           {showResult && (
             <motion.button
-              className="w-full py-5 mt-6 text-black rounded-lg font-bold text-xl shadow-lg tracking-wide transform transition-all duration-300"
+              className="w-full py-4 sm:py-5 mt-4 sm:mt-6 text-black rounded-lg font-bold text-lg sm:text-xl shadow-lg tracking-wide transform transition-all duration-300"
               style={{ 
                 background: `linear-gradient(to right, ${colors.secondary}, ${colors.secondary}90, ${colors.secondary}80)`,
                 boxShadow: `0 10px 15px -3px ${colors.secondary}30`

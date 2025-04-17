@@ -80,67 +80,70 @@ const getRandomFortune = async (category: 'all' | 'love' | 'career' | 'health' |
 // Loading screen component
 const LoadingScreen = ({ theme }: { theme: Theme }) => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-8"
+    <div className="min-h-screen flex flex-col items-center justify-center p-4"
          style={{ 
            background: `linear-gradient(to bottom right, #9b2c2c, #7f1d1d, black)`
          }}>
-      <div className="w-full max-w-4xl mx-auto">
+      <div className="w-full max-w-lg mx-auto p-8 rounded-2xl backdrop-blur-md bg-black/40 border-4 shadow-2xl"
+           style={{ 
+             borderColor: theme.colors.primary,
+             boxShadow: `0 25px 50px -12px ${theme.colors.primary}40`
+           }}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="relative"
+          transition={{ duration: 0.5 }}
+          className="text-center"
         >
-          <div className="absolute inset-0 bg-black/50 rounded-3xl backdrop-blur-sm" />
-          <div className="relative p-6 sm:p-8">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-6 text-white">
-              Cosmic Fortune
-            </h1>
-            <p className="text-lg sm:text-xl text-center mb-8 text-white/90">
-              Discover your destiny through ancient wisdom
-            </p>
+          <h2 className="text-4xl font-serif mb-6 font-bold drop-shadow-lg tracking-wide"
+              style={{ color: theme.colors.primary }}>
+            Ancient Fortune Teller
+          </h2>
+          <p className="mb-8 text-xl font-medium"
+             style={{ color: theme.colors.text }}>
+            Summoning ancient wisdom...
+          </p>
+          
+          <div className="relative flex justify-center items-center">
+            {/* Main spinner */}
+            <motion.div
+              className="w-28 h-28 border-8 rounded-full"
+              style={{ 
+                borderColor: `${theme.colors.primary}20`,
+                borderTopColor: theme.colors.primary
+              }}
+              animate={{ rotate: 360 }}
+              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+            />
             
-            <div className="relative flex justify-center items-center">
-              {/* Main spinner */}
-              <motion.div
-                className="w-28 h-28 border-8 rounded-full"
-                style={{ 
-                  borderColor: `${theme.colors.primary}20`,
-                  borderTopColor: theme.colors.primary
-                }}
-                animate={{ rotate: 360 }}
-                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-              />
-              
-              {/* Inner spinner */}
-              <motion.div
-                className="absolute w-16 h-16 border-6 rounded-full"
-                style={{ 
-                  borderColor: `${theme.colors.text}30`,
-                  borderTopColor: theme.colors.text
-                }}
-                animate={{ rotate: -360 }}
-                transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-              />
-              
-              {/* Center dot */}
-              <div className="absolute w-6 h-6 rounded-full shadow-lg"
-                   style={{ 
-                     backgroundColor: theme.colors.primary,
-                     boxShadow: `0 4px 6px -1px ${theme.colors.primary}50`
-                   }}></div>
-            </div>
+            {/* Inner spinner */}
+            <motion.div
+              className="absolute w-16 h-16 border-6 rounded-full"
+              style={{ 
+                borderColor: `${theme.colors.text}30`,
+                borderTopColor: theme.colors.text
+              }}
+              animate={{ rotate: -360 }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+            />
             
-            <motion.p
-              className="mt-8 text-lg italic"
-              style={{ color: `${theme.colors.text}80` }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: [0, 1, 0.8, 1] }}
-              transition={{ delay: 1, duration: 3, repeat: Infinity }}
-            >
-              The cards of fate are aligning...
-            </motion.p>
+            {/* Center dot */}
+            <div className="absolute w-6 h-6 rounded-full shadow-lg"
+                 style={{ 
+                   backgroundColor: theme.colors.primary,
+                   boxShadow: `0 4px 6px -1px ${theme.colors.primary}50`
+                 }}></div>
           </div>
+          
+          <motion.p
+            className="mt-8 text-lg italic"
+            style={{ color: `${theme.colors.text}80` }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 1, 0.8, 1] }}
+            transition={{ delay: 1, duration: 3, repeat: Infinity }}
+          >
+            The cards of fate are aligning...
+          </motion.p>
         </motion.div>
       </div>
       
@@ -374,14 +377,14 @@ function App() {
            style={{ backgroundColor: `rgba(${activeTheme.id === 'classic' ? '0, 0, 0' : '30, 20, 60'}, 0.75)` }}
       >
         {/* Main content container */}
-        <div className="w-full max-w-5xl mx-auto p-6 rounded-lg backdrop-blur-sm border-2 shadow-lg"
+        <div className="w-full max-w-5xl mx-auto p-4 sm:p-6 rounded-lg backdrop-blur-sm border-2 shadow-lg"
              style={{ 
                backgroundColor: `${activeTheme.colors.secondary}80`,
                borderColor: activeTheme.colors.primary
              }}>
           {/* Top toolbar */}
           <div className="relative">
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex flex-col sm:flex-row justify-between items-center mb-4 sm:mb-6 gap-4">
               <div className="flex items-center space-x-4">
                 <motion.button
                   className="text-white bg-black/80 backdrop-blur-sm px-3 py-1 rounded-full text-sm border"
@@ -476,11 +479,11 @@ function App() {
           </div>
 
           {/* Main content */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
             {/* Left column - Fortune Card */}
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               <motion.h1 
-                className="text-4xl md:text-5xl font-serif text-center drop-shadow-lg font-bold"
+                className="text-3xl sm:text-4xl md:text-5xl font-serif text-center drop-shadow-lg font-bold"
                 style={{ color: activeTheme.colors.primary }}
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -498,7 +501,7 @@ function App() {
                 />
               </div>
               
-              <div className="flex justify-center mt-8">
+              <div className="flex justify-center mt-4 sm:mt-8">
                 <SealButton 
                   onClick={generateFortune} 
                   disabled={isGeneratingFortune}
@@ -508,7 +511,7 @@ function App() {
               </div>
               
               <motion.p 
-                className="text-center max-w-md mx-auto p-3 rounded-md bg-black/80 border font-bold text-lg shadow-lg"
+                className="text-center max-w-md mx-auto p-3 rounded-md bg-black/80 border font-bold text-base sm:text-lg shadow-lg"
                 style={{ 
                   color: activeTheme.colors.primary,
                   borderColor: `${activeTheme.colors.primary}50`
@@ -521,7 +524,7 @@ function App() {
               </motion.p>
 
               {/* Theme selector and background switcher */}
-              <div className="flex flex-wrap justify-center gap-3 mt-6">
+              <div className="flex flex-wrap justify-center gap-3 mt-4 sm:mt-6">
                 <ThemeSelector currentTheme={currentTheme} onSelectTheme={handleThemeChange} />
                 <BackgroundSwitcher
                   currentBg={currentBg}
@@ -533,7 +536,7 @@ function App() {
             </div>
 
             {/* Right column - Dharma Calculator */}
-            <div className="flex flex-col justify-start pt-16">
+            <div className="flex flex-col justify-start pt-8 sm:pt-16">
               <div className="w-full max-w-md mx-auto rounded-xl backdrop-blur-md border-4 shadow-2xl"
                    style={{ 
                      background: `linear-gradient(to bottom right, ${activeTheme.colors.secondary}90, black)`,

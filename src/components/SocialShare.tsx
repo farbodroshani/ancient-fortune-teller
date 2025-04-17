@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Twitter, Facebook, Instagram, Linkedin, Share2, Copy } from 'lucide-react';
+import { Twitter, Facebook, Instagram, Linkedin, Share2 } from 'lucide-react';
 
 interface SocialShareProps {
   fortune: {
@@ -35,38 +35,37 @@ export function SocialShare({ fortune, theme }: SocialShareProps) {
     { name: 'LinkedIn', icon: Linkedin, url: socialLinks.linkedin, color: '#0077B5' }
   ];
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(shareText);
-    alert('Fortune copied to clipboard!');
-  };
-
   return (
-    <div className="w-full max-w-md mx-auto">
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-        {socialButtons.map((button) => (
-          <motion.a
-            key={button.name}
-            href={button.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className={`p-3 rounded-lg text-white flex flex-col items-center justify-center gap-2 ${button.color}`}
-          >
-            <button.icon className="w-6 h-6" />
-            <span className="text-sm">{button.name}</span>
-          </motion.a>
-        ))}
-        <motion.button
-          whileHover={{ scale: 1.05 }}
+    <div className="flex flex-wrap justify-center gap-3 mt-4">
+      {socialButtons.map(({ name, icon: Icon, url, color }) => (
+        <motion.a
+          key={name}
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-white shadow-lg"
+          style={{ backgroundColor: color }}
+          whileHover={{ scale: 1.05, y: -2 }}
           whileTap={{ scale: 0.95 }}
-          onClick={handleCopy}
-          className="p-3 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 text-white flex flex-col items-center justify-center gap-2"
         >
-          <Copy className="w-6 h-6" />
-          <span className="text-sm">Copy</span>
-        </motion.button>
-      </div>
+          <Icon size={20} />
+          <span>{name}</span>
+        </motion.a>
+      ))}
+      
+      <motion.button
+        className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-black shadow-lg"
+        style={{ backgroundColor: theme.colors.primary }}
+        whileHover={{ scale: 1.05, y: -2 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => {
+          navigator.clipboard.writeText(shareText);
+          alert('Fortune copied to clipboard!');
+        }}
+      >
+        <Share2 size={20} />
+        <span>Copy</span>
+      </motion.button>
     </div>
   );
 } 

@@ -144,19 +144,19 @@ export function ThemeSelector({ currentTheme, onSelectTheme }: ThemeSelectorProp
         onClick={() => setIsOpen(!isOpen)}
       >
         <Palette size={18} />
-        <span className="font-medium">Theme</span>
+        <span className="font-medium text-sm sm:text-base">Theme</span>
       </motion.button>
 
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-black/90 backdrop-blur-md rounded-lg p-4 border border-white/20 w-64 shadow-xl z-50"
+            className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-black/90 backdrop-blur-md rounded-lg p-3 sm:p-4 border border-white/20 w-48 sm:w-64 shadow-xl z-50"
             initial={{ opacity: 0, y: 5, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 5, scale: 0.95 }}
             transition={{ duration: 0.2 }}
           >
-            <div className="text-white text-center font-medium mb-3 border-b border-white/20 pb-2">
+            <div className="text-white text-center font-medium mb-2 sm:mb-3 border-b border-white/20 pb-2 text-sm sm:text-base">
               Select Theme
             </div>
             <div className="grid grid-cols-2 gap-2">
@@ -175,40 +175,15 @@ export function ThemeSelector({ currentTheme, onSelectTheme }: ThemeSelectorProp
                   }}
                 >
                   {/* Theme preview */}
-                  <div 
-                    className="w-full aspect-video p-2"
-                    style={{ 
-                      background: `linear-gradient(to bottom right, ${theme.colors.secondary}, #000000)`
-                    }}
-                  >
-                    <div 
-                      className="w-full h-full rounded flex items-center justify-center bg-black/50"
-                      style={{ 
-                        border: `1px solid ${theme.colors.primary}`
-                      }}
-                    >
-                      <div 
-                        className="font-bold text-xs drop-shadow-md"
-                        style={{ color: 'white' }}
-                      >
-                        {theme.name}
-                      </div>
-                    </div>
+                  <div className="aspect-square flex items-center justify-center p-2"
+                       style={{ backgroundColor: theme.colors.secondary }}>
+                    <div className="w-full h-full rounded-full"
+                         style={{ backgroundColor: theme.colors.primary }} />
                   </div>
-                  
-                  {/* Color preview dots */}
-                  <div className="absolute bottom-1 left-1 flex space-x-1">
-                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: theme.colors.primary }}></div>
-                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: theme.colors.secondary }}></div>
-                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: theme.colors.text }}></div>
+                  <div className="p-2 text-center text-xs sm:text-sm font-medium"
+                       style={{ color: theme.colors.primary }}>
+                    {theme.name}
                   </div>
-                  
-                  {/* Selected indicator */}
-                  {currentTheme === theme.id && (
-                    <div className="absolute top-1 right-1 bg-white rounded-full p-0.5 shadow-lg">
-                      <Check size={12} className="text-black" />
-                    </div>
-                  )}
                 </motion.button>
               ))}
             </div>
