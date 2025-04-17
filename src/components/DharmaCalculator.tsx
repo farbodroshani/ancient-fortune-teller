@@ -237,11 +237,31 @@ export function DharmaCalculator({ theme }: DharmaCalculatorProps) {
             type="date"
             value={birthDate}
             onChange={(e) => setBirthDate(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 sm:py-4 bg-black/60 border-3 rounded-lg text-white focus:outline-none text-base sm:text-lg font-medium shadow-inner"
+            className="w-full pl-12 pr-4 py-3 sm:py-4 bg-black/60 border-3 rounded-lg text-white focus:outline-none text-base sm:text-lg font-medium shadow-inner appearance-none"
             style={{ 
               borderColor: `${colors.primary}70`,
               // @ts-ignore - focus style is valid
-              ["&:focus"]: { borderColor: colors.primary }
+              ["&:focus"]: { borderColor: colors.primary },
+              // Custom styling for date input
+              ["&::-webkit-calendar-picker-indicator"]: {
+                filter: "invert(1)",
+                opacity: 0.7,
+                cursor: "pointer",
+                padding: "4px",
+                borderRadius: "4px",
+                backgroundColor: `${colors.primary}20`
+              },
+              ["&::-webkit-datetime-edit"]: {
+                padding: "0.5rem",
+                color: "white"
+              },
+              ["&::-webkit-datetime-edit-fields-wrapper"]: {
+                padding: "0.5rem"
+              },
+              ["&::-webkit-datetime-edit-text"]: {
+                color: `${colors.primary}70`,
+                padding: "0 0.3rem"
+              }
             }}
           />
         </div>
@@ -257,11 +277,31 @@ export function DharmaCalculator({ theme }: DharmaCalculatorProps) {
             value={birthTime}
             onChange={handleTimeChange}
             placeholder="Time of Birth (24-hour format)"
-            className="w-full pl-12 pr-4 py-3 sm:py-4 bg-black/60 border-3 rounded-lg text-white focus:outline-none text-base sm:text-lg font-medium shadow-inner"
+            className="w-full pl-12 pr-4 py-3 sm:py-4 bg-black/60 border-3 rounded-lg text-white focus:outline-none text-base sm:text-lg font-medium shadow-inner appearance-none"
             style={{ 
               borderColor: `${colors.primary}70`,
               // @ts-ignore - focus style is valid
-              ["&:focus"]: { borderColor: colors.primary }
+              ["&:focus"]: { borderColor: colors.primary },
+              // Custom styling for time input
+              ["&::-webkit-calendar-picker-indicator"]: {
+                filter: "invert(1)",
+                opacity: 0.7,
+                cursor: "pointer",
+                padding: "4px",
+                borderRadius: "4px",
+                backgroundColor: `${colors.primary}20`
+              },
+              ["&::-webkit-datetime-edit"]: {
+                padding: "0.5rem",
+                color: "white"
+              },
+              ["&::-webkit-datetime-edit-fields-wrapper"]: {
+                padding: "0.5rem"
+              },
+              ["&::-webkit-datetime-edit-text"]: {
+                color: `${colors.primary}70`,
+                padding: "0 0.3rem"
+              }
             }}
           />
         </div>
