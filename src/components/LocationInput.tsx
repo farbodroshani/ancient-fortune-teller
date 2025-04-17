@@ -97,8 +97,16 @@ export function LocationInput({ value, onChange, theme }: LocationInputProps) {
       {showSuggestions && (suggestions.length > 0 || isLoading) && (
         <div
           ref={suggestionsRef}
-          className="absolute z-10 w-full mt-1 bg-gray-900 border rounded-lg shadow-lg max-h-60 overflow-y-auto"
-          style={{ borderColor: `${colors.primary}50` }}
+          className="absolute z-10 w-full mt-1 bg-gray-900 border rounded-lg shadow-lg max-h-[200px] overflow-y-auto"
+          style={{ 
+            borderColor: `${colors.primary}50`,
+            maxHeight: 'calc(100vh - 200px)',
+            position: 'fixed',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: 'calc(100% - 2rem)',
+            maxWidth: '500px'
+          }}
         >
           {isLoading ? (
             <div className="p-3 text-center text-gray-400">Loading suggestions...</div>

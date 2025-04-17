@@ -497,7 +497,7 @@ function App() {
           </div>
 
           {/* Main content */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 relative">
             {/* Left column - Fortune Card */}
             <div className="space-y-4 sm:space-y-6">
               <motion.h1 
@@ -514,7 +514,7 @@ function App() {
                 <FortuneCard 
                   fortune={fortune} 
                   isFlipped={isFlipped} 
-                  onFlip={handleFlip}
+                  onFlip={handleFlip} 
                   theme={activeTheme}
                 />
               </div>
@@ -542,7 +542,7 @@ function App() {
               </motion.p>
 
               {/* Theme selector and background switcher */}
-              <div className="flex flex-wrap justify-center gap-3 mt-4 sm:mt-6">
+              <div className="flex flex-wrap justify-center gap-3 mt-4 sm:mt-6 mb-8 z-10">
                 <ThemeSelector currentTheme={currentTheme} onSelectTheme={handleThemeChange} />
                 <BackgroundSwitcher
                   currentBg={currentBg}
@@ -626,7 +626,7 @@ function App() {
         {/* Add Learn More button */}
         <button
           onClick={() => setShowEducationalContent(true)}
-          className="fixed bottom-4 right-4 p-3 bg-purple-600 hover:bg-purple-700 text-white rounded-full shadow-lg transition-colors duration-300 z-40"
+          className="fixed bottom-4 right-4 p-3 bg-purple-600 hover:bg-purple-700 text-white rounded-full shadow-lg transition-colors duration-300 z-50"
           aria-label="Learn about fortune telling methods"
         >
           <BookOpen className="w-6 h-6" />
