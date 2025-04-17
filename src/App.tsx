@@ -569,7 +569,14 @@ function App() {
           {/* Add Learn More button - Moved to left side */}
           <button
             onClick={() => setShowEducationalContent(true)}
-            className="fixed bottom-4 left-4 p-3 bg-purple-600 hover:bg-purple-700 text-white rounded-full shadow-lg transition-colors duration-300 z-50"
+            className="fixed bottom-4 left-4 p-3 bg-purple-600 hover:bg-purple-700 text-white rounded-full shadow-lg transition-colors duration-300 z-[100]"
+            style={{
+              position: 'fixed',
+              bottom: '1rem',
+              left: '1rem',
+              zIndex: 100,
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.5)'
+            }}
             aria-label="Learn about fortune telling methods"
           >
             <BookOpen className="w-6 h-6" />
@@ -577,7 +584,9 @@ function App() {
 
           {/* Educational Content Modal */}
           {showEducationalContent && (
-            <EducationalContent onClose={() => setShowEducationalContent(false)} />
+            <div className="fixed inset-0 z-[101]">
+              <EducationalContent onClose={() => setShowEducationalContent(false)} />
+            </div>
           )}
         </div>
 
