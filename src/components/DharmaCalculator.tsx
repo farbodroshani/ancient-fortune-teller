@@ -624,7 +624,7 @@ export function DharmaCalculator({ theme }: DharmaCalculatorProps) {
 
               <div className="mt-4 flex justify-center">
                 <motion.button
-                  className="px-6 py-3 rounded-lg font-bold text-lg shadow-lg"
+                  className="px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-bold text-sm sm:text-base md:text-lg shadow-lg"
                   style={{ 
                     background: `linear-gradient(to right, ${colors.primary}, ${colors.primary}90)`,
                     color: 'black'
