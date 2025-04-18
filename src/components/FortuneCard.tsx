@@ -1,22 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Scroll, Star, Wallet } from 'lucide-react';
+import { Scroll, Star, Wallet, Loader2 } from 'lucide-react';
 import type { FortuneCardProps } from '../types';
 import { backgrounds } from './BackgroundSwitcher';
 
 export function FortuneCard({ fortune, isFlipped, onFlip, theme, onMintNFT }: FortuneCardProps) {
-  // Use a random background image for the card
   const [cardBackground, setCardBackground] = useState(backgrounds[0]);
   const [isMinting, setIsMinting] = useState(false);
+  const [mintError, setMintError] = useState<string | null>(null);
+  const [mintSuccess, setMintSuccess] = useState(false);
   
-  // Update background when fortune changes
   useEffect(() => {
-    // Select a random background based on fortune id for consistency
     const bgIndex = fortune.id % backgrounds.length;
     setCardBackground(backgrounds[bgIndex]);
   }, [fortune]);
 
-  // Category icon and colors
+  // Handle keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter' && !isFlipped) {
+        onFlip();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isFlipped, onFlip]);
+
   const getCategoryStyles = (category: 'love' | 'career' | 'health' | 'luck') => {
     switch (category) {
       case 'love':
@@ -67,14 +77,12 @@ export function FortuneCard({ fortune, isFlipped, onFlip, theme, onMintNFT }: Fo
   const secondaryColor = theme?.secondaryColor || 'red-800';
   const textColor = theme?.textColor || 'yellow-400';
 
-  // Card flipping style
   const cardStyle = {
     transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
     transformStyle: 'preserve-3d' as 'preserve-3d',
     transition: 'transform 0.7s'
   };
 
-  // Front and back face styles
   const faceStyle = {
     backfaceVisibility: 'hidden' as 'hidden',
     position: 'absolute' as 'absolute',
@@ -91,9 +99,12 @@ export function FortuneCard({ fortune, isFlipped, onFlip, theme, onMintNFT }: Fo
     if (!onMintNFT) return;
     
     setIsMinting(true);
+    setMintError(null);
     try {
       await onMintNFT(fortune);
+      setMintSuccess(true);
     } catch (error) {
+      setMintError('Failed to mint NFT. Please try again.');
       console.error('Failed to mint NFT:', error);
     } finally {
       setIsMinting(false);
@@ -105,6 +116,9 @@ export function FortuneCard({ fortune, isFlipped, onFlip, theme, onMintNFT }: Fo
       className="relative w-[280px] sm:w-[350px] md:w-[400px] h-[420px] sm:h-[525px] md:h-[600px] mx-auto cursor-pointer transform hover:scale-105 transition-transform duration-300" 
       style={{ perspective: '1500px' }}
       onClick={onFlip}
+      role="button"
+      aria-label={isFlipped ? "Fortune card" : "Tap to reveal fortune"}
+      tabIndex={0}
     >
       <div className="relative w-full h-full shadow-2xl rounded-xl" style={cardStyle}>
         {/* Front of card */}
@@ -144,9 +158,11 @@ export function FortuneCard({ fortune, isFlipped, onFlip, theme, onMintNFT }: Fo
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3, duration: 0.5 }}
               >
-                {/* Category Badge - More prominent */}
+                {/* Category Badge */}
                 <div className="absolute top-2 sm:top-3 md:top-4 left-2 sm:left-3 md:left-4 right-2 sm:right-3 md:right-4 flex justify-center">
-                  <div className={`${categoryStyles.gradient} text-white px-3 sm:px-4 md:px-6 py-1 sm:py-1.5 md:py-2 rounded-full shadow-lg font-bold tracking-wider text-sm sm:text-base md:text-lg uppercase flex items-center gap-1 sm:gap-2`}>
+                  <div className={`${categoryStyles.gradient} text-white px-3 sm:px-4 md:px-6 py-1 sm:py-1.5 md:py-2 rounded-full shadow-lg font-bold tracking-wider text-sm sm:text-base md:text-lg uppercase flex items-center gap-1 sm:gap-2`}
+                       role="status"
+                       aria-label={`Category: ${fortune.category}`}>
                     <Star className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" />
                     <span>{fortune.category}</span>
                   </div>
@@ -159,7 +175,8 @@ export function FortuneCard({ fortune, isFlipped, onFlip, theme, onMintNFT }: Fo
                   <div className="absolute -right-1 sm:-right-2 -top-1 sm:-top-2">
                     <Star className={`w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 fill-${primaryColor} text-${primaryColor} drop-shadow-md`} />
                   </div>
-                  <h2 className={`text-4xl sm:text-5xl md:text-6xl font-noto-serif-sc text-center text-${primaryColor} mb-4 sm:mb-5 md:mb-6 pt-2 font-bold drop-shadow-lg`}>
+                  <h2 className={`text-4xl sm:text-5xl md:text-6xl font-noto-serif-sc text-center text-${primaryColor} mb-4 sm:mb-5 md:mb-6 pt-2 font-bold drop-shadow-lg`}
+                      aria-label={`Chinese character: ${fortune.chinese}`}>
                     {fortune.chinese}
                   </h2>
                 </div>
@@ -191,11 +208,25 @@ export function FortuneCard({ fortune, isFlipped, onFlip, theme, onMintNFT }: Fo
                       e.stopPropagation();
                       handleMintNFT();
                     }}
-                    disabled={isMinting}
+                    disabled={isMinting || mintSuccess}
+                    aria-label={mintSuccess ? "Fortune already minted" : "Mint fortune as NFT"}
+                    aria-busy={isMinting}
                   >
-                    <Wallet className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
-                    <span>{isMinting ? 'Minting...' : 'Mint as NFT'}</span>
+                    {isMinting ? (
+                      <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 animate-spin" />
+                    ) : mintSuccess ? (
+                      <Star className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
+                    ) : (
+                      <Wallet className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
+                    )}
+                    <span>{isMinting ? 'Minting...' : mintSuccess ? 'Minted!' : 'Mint as NFT'}</span>
                   </motion.button>
+                )}
+
+                {mintError && (
+                  <p className="mt-2 text-sm text-red-500" role="alert">
+                    {mintError}
+                  </p>
                 )}
               </motion.div>
             </div>

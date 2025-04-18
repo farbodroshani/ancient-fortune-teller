@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Scroll, BookOpen, ChevronDown, ChevronUp } from 'lucide-react';
+import { Scroll, BookOpen, ChevronDown, ChevronUp, Loader2 } from 'lucide-react';
 import { Theme } from '../types';
 
 interface MainPageProps {
@@ -11,6 +11,32 @@ interface MainPageProps {
 
 export const MainPage: React.FC<MainPageProps> = ({ theme, onSelectFortune, onSelectDharma }) => {
   const [showEducation, setShowEducation] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [activeButton, setActiveButton] = useState<string | null>(null);
+
+  // Handle keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setShowEducation(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const handleFortuneClick = () => {
+    setIsLoading(true);
+    setActiveButton('fortune');
+    onSelectFortune();
+  };
+
+  const handleDharmaClick = () => {
+    setIsLoading(true);
+    setActiveButton('dharma');
+    onSelectDharma();
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-2 sm:p-4"
@@ -45,14 +71,22 @@ export const MainPage: React.FC<MainPageProps> = ({ theme, onSelectFortune, onSe
               style={{ borderColor: `${theme.colors.primary}50` }}
               whileHover={{ scale: 1.02, y: -5 }}
               whileTap={{ scale: 0.98 }}
-              onClick={onSelectFortune}
+              onClick={handleFortuneClick}
+              disabled={isLoading}
+              aria-label="Select Fortune Cards"
+              aria-busy={isLoading && activeButton === 'fortune'}
+              role="button"
             >
               <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-600/20 to-indigo-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               
               <div className="relative z-10 flex flex-col items-center">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 mb-4 sm:mb-6 flex items-center justify-center rounded-full bg-gradient-to-br from-purple-600/20 to-indigo-600/20">
-                  <Scroll className="w-8 h-8 sm:w-12 sm:h-12" style={{ color: theme.colors.primary }} />
-                </div>
+                {isLoading && activeButton === 'fortune' ? (
+                  <Loader2 className="w-8 h-8 sm:w-12 sm:h-12 animate-spin" style={{ color: theme.colors.primary }} />
+                ) : (
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 mb-4 sm:mb-6 flex items-center justify-center rounded-full bg-gradient-to-br from-purple-600/20 to-indigo-600/20">
+                    <Scroll className="w-8 h-8 sm:w-12 sm:h-12" style={{ color: theme.colors.primary }} />
+                  </div>
+                )}
                 
                 <h2 className="text-xl sm:text-2xl font-serif mb-2 sm:mb-4 font-bold"
                     style={{ color: theme.colors.primary }}>
@@ -71,14 +105,22 @@ export const MainPage: React.FC<MainPageProps> = ({ theme, onSelectFortune, onSe
               style={{ borderColor: `${theme.colors.primary}50` }}
               whileHover={{ scale: 1.02, y: -5 }}
               whileTap={{ scale: 0.98 }}
-              onClick={onSelectDharma}
+              onClick={handleDharmaClick}
+              disabled={isLoading}
+              aria-label="Select Dharma Calculator"
+              aria-busy={isLoading && activeButton === 'dharma'}
+              role="button"
             >
               <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-amber-600/20 to-yellow-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               
               <div className="relative z-10 flex flex-col items-center">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 mb-4 sm:mb-6 flex items-center justify-center rounded-full bg-gradient-to-br from-amber-600/20 to-yellow-600/20">
-                  <BookOpen className="w-8 h-8 sm:w-12 sm:h-12" style={{ color: theme.colors.primary }} />
-                </div>
+                {isLoading && activeButton === 'dharma' ? (
+                  <Loader2 className="w-8 h-8 sm:w-12 sm:h-12 animate-spin" style={{ color: theme.colors.primary }} />
+                ) : (
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 mb-4 sm:mb-6 flex items-center justify-center rounded-full bg-gradient-to-br from-amber-600/20 to-yellow-600/20">
+                    <BookOpen className="w-8 h-8 sm:w-12 sm:h-12" style={{ color: theme.colors.primary }} />
+                  </div>
+                )}
                 
                 <h2 className="text-xl sm:text-2xl font-serif mb-2 sm:mb-4 font-bold"
                     style={{ color: theme.colors.primary }}>
@@ -110,6 +152,9 @@ export const MainPage: React.FC<MainPageProps> = ({ theme, onSelectFortune, onSe
                 whileHover={{ scale: 1.02, y: -2 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setShowEducation(!showEducation)}
+                aria-expanded={showEducation}
+                aria-label={showEducation ? "Close Ancient Wisdom Guide" : "Open Ancient Wisdom Guide"}
+                role="button"
               >
                 <div className="flex items-center space-x-2">
                   <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-gradient-to-br from-green-600/20 to-emerald-600/20">
@@ -119,7 +164,11 @@ export const MainPage: React.FC<MainPageProps> = ({ theme, onSelectFortune, onSe
                     Guide
                   </h3>
                 </div>
-                {showEducation ? <ChevronUp className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: theme.colors.primary }} /> : <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: theme.colors.primary }} />}
+                {showEducation ? (
+                  <ChevronUp className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: theme.colors.primary }} />
+                ) : (
+                  <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: theme.colors.primary }} />
+                )}
               </motion.button>
             </div>
 
@@ -129,7 +178,10 @@ export const MainPage: React.FC<MainPageProps> = ({ theme, onSelectFortune, onSe
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: 'auto', opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
                   className="overflow-hidden mt-4"
+                  role="region"
+                  aria-label="Ancient Wisdom Guide Content"
                 >
                   <div className="p-4 sm:p-5 md:p-6 rounded-xl bg-black/40 backdrop-blur-sm border-2"
                        style={{ borderColor: `${theme.colors.primary}50` }}>
