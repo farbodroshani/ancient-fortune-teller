@@ -102,25 +102,25 @@ export function FortuneCard({ fortune, isFlipped, onFlip, theme, onMintNFT }: Fo
 
   return (
     <div 
-      className="relative w-[400px] h-[600px] mx-auto cursor-pointer transform hover:scale-105 transition-transform duration-300" 
+      className="relative w-[280px] sm:w-[350px] md:w-[400px] h-[420px] sm:h-[525px] md:h-[600px] mx-auto cursor-pointer transform hover:scale-105 transition-transform duration-300" 
       style={{ perspective: '1500px' }}
       onClick={onFlip}
     >
       <div className="relative w-full h-full shadow-2xl rounded-xl" style={cardStyle}>
         {/* Front of card */}
         <div style={faceStyle}>
-          <div className={`w-full h-full bg-gradient-to-br from-${secondaryColor} to-${secondaryColor}/80 rounded-xl shadow-xl border-4 border-${primaryColor}/70 flex items-center justify-center p-8`}>
+          <div className={`w-full h-full bg-gradient-to-br from-${secondaryColor} to-${secondaryColor}/80 rounded-xl shadow-xl border-2 sm:border-4 border-${primaryColor}/70 flex items-center justify-center p-4 sm:p-6 md:p-8`}>
             <motion.div 
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.5 }}
               className="text-center"
             >
-              <div className="flex justify-center mb-8">
-                <Scroll className={`w-32 h-32 text-${primaryColor} drop-shadow-lg`} />
+              <div className="flex justify-center mb-4 sm:mb-6 md:mb-8">
+                <Scroll className={`w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 text-${primaryColor} drop-shadow-lg`} />
               </div>
               <motion.div
-                className={`text-center text-${textColor} text-2xl font-bold tracking-wide drop-shadow-md`}
+                className={`text-center text-${textColor} text-lg sm:text-xl md:text-2xl font-bold tracking-wide drop-shadow-md`}
                 initial={{ y: 10, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
@@ -134,10 +134,10 @@ export function FortuneCard({ fortune, isFlipped, onFlip, theme, onMintNFT }: Fo
         {/* Back of card */}
         <div style={backFaceStyle}>
           <div 
-            className={`w-full h-full bg-cover bg-center rounded-xl shadow-xl border-4 border-${primaryColor}/70 p-8 flex flex-col items-center justify-center overflow-hidden`}
+            className={`w-full h-full bg-cover bg-center rounded-xl shadow-xl border-2 sm:border-4 border-${primaryColor}/70 p-4 sm:p-6 md:p-8 flex flex-col items-center justify-center overflow-hidden`}
             style={{ backgroundImage: `url(${cardBackground})` }}
           >
-            <div className={`bg-black/75 p-8 rounded-lg backdrop-blur-md w-full h-full flex flex-col items-center justify-center border-2 ${categoryStyles.border}`}>
+            <div className={`bg-black/75 p-4 sm:p-6 md:p-8 rounded-lg backdrop-blur-md w-full h-full flex flex-col items-center justify-center border-2 ${categoryStyles.border}`}>
               <motion.div 
                 className="flex flex-col items-center w-full"
                 initial={{ opacity: 0 }}
@@ -145,27 +145,27 @@ export function FortuneCard({ fortune, isFlipped, onFlip, theme, onMintNFT }: Fo
                 transition={{ delay: 0.3, duration: 0.5 }}
               >
                 {/* Category Badge - More prominent */}
-                <div className="absolute top-4 left-4 right-4 flex justify-center">
-                  <div className={`${categoryStyles.gradient} text-white px-6 py-2 rounded-full shadow-lg font-bold tracking-wider text-lg uppercase flex items-center gap-2`}>
-                    <Star className="w-5 h-5" />
+                <div className="absolute top-2 sm:top-3 md:top-4 left-2 sm:left-3 md:left-4 right-2 sm:right-3 md:right-4 flex justify-center">
+                  <div className={`${categoryStyles.gradient} text-white px-3 sm:px-4 md:px-6 py-1 sm:py-1.5 md:py-2 rounded-full shadow-lg font-bold tracking-wider text-sm sm:text-base md:text-lg uppercase flex items-center gap-1 sm:gap-2`}>
+                    <Star className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" />
                     <span>{fortune.category}</span>
                   </div>
                 </div>
                 
-                <div className="w-full relative mb-6 mt-16">
-                  <div className="absolute -left-2 -top-2">
-                    <Star className={`w-8 h-8 fill-${primaryColor} text-${primaryColor} drop-shadow-md`} />
+                <div className="w-full relative mb-4 sm:mb-5 md:mb-6 mt-12 sm:mt-14 md:mt-16">
+                  <div className="absolute -left-1 sm:-left-2 -top-1 sm:-top-2">
+                    <Star className={`w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 fill-${primaryColor} text-${primaryColor} drop-shadow-md`} />
                   </div>
-                  <div className="absolute -right-2 -top-2">
-                    <Star className={`w-8 h-8 fill-${primaryColor} text-${primaryColor} drop-shadow-md`} />
+                  <div className="absolute -right-1 sm:-right-2 -top-1 sm:-top-2">
+                    <Star className={`w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 fill-${primaryColor} text-${primaryColor} drop-shadow-md`} />
                   </div>
-                  <h2 className={`text-6xl font-noto-serif-sc text-center text-${primaryColor} mb-6 pt-2 font-bold drop-shadow-lg`}>
+                  <h2 className={`text-4xl sm:text-5xl md:text-6xl font-noto-serif-sc text-center text-${primaryColor} mb-4 sm:mb-5 md:mb-6 pt-2 font-bold drop-shadow-lg`}>
                     {fortune.chinese}
                   </h2>
                 </div>
                 
                 <motion.p 
-                  className={`text-3xl text-${textColor} mb-8 text-center font-bold drop-shadow-md`}
+                  className={`text-xl sm:text-2xl md:text-3xl text-${textColor} mb-4 sm:mb-6 md:mb-8 text-center font-bold drop-shadow-md`}
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.4, duration: 0.5 }}
@@ -174,17 +174,17 @@ export function FortuneCard({ fortune, isFlipped, onFlip, theme, onMintNFT }: Fo
                 </motion.p>
                 
                 <motion.div
-                  className={`w-full p-6 rounded-lg bg-gradient-to-b ${categoryStyles.bgFrom} ${categoryStyles.bgTo} border border-white/20 shadow-inner`}
+                  className={`w-full p-3 sm:p-4 md:p-6 rounded-lg bg-gradient-to-b ${categoryStyles.bgFrom} ${categoryStyles.bgTo} border border-white/20 shadow-inner`}
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.5, duration: 0.5 }}
                 >
-                  <p className="text-xl text-white/95 text-center italic font-medium">{fortune.interpretation}</p>
+                  <p className="text-base sm:text-lg md:text-xl text-white/95 text-center italic font-medium">{fortune.interpretation}</p>
                 </motion.div>
 
                 {onMintNFT && (
                   <motion.button
-                    className="mt-6 flex items-center gap-3 px-6 py-3 rounded-lg font-medium text-white shadow-lg bg-gradient-to-r from-purple-500 to-indigo-500 text-lg"
+                    className="mt-4 sm:mt-5 md:mt-6 flex items-center gap-2 sm:gap-3 px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 md:py-3 rounded-lg font-medium text-white shadow-lg bg-gradient-to-r from-purple-500 to-indigo-500 text-sm sm:text-base md:text-lg"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={(e) => {
@@ -193,7 +193,7 @@ export function FortuneCard({ fortune, isFlipped, onFlip, theme, onMintNFT }: Fo
                     }}
                     disabled={isMinting}
                   >
-                    <Wallet size={24} />
+                    <Wallet className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
                     <span>{isMinting ? 'Minting...' : 'Mint as NFT'}</span>
                   </motion.button>
                 )}
