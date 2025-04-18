@@ -588,14 +588,14 @@ export function DharmaCalculator({ theme }: DharmaCalculatorProps) {
                   Dharma Compatibility Analysis
                 </h2>
                 <button
-                  className="text-gray-400 hover:text-white"
+                  className="text-gray-400 hover:text-white p-4 text-2xl"
                   onClick={() => setShowComparison(false)}
                 >
                   ✕
                 </button>
               </div>
 
-              <div className="overflow-y-auto flex-1 space-y-4">
+              <div className="overflow-y-auto flex-1 space-y-4 mb-16">
                 {comparisonResults.map((result, index) => (
                   <div
                     key={index}
@@ -622,18 +622,19 @@ export function DharmaCalculator({ theme }: DharmaCalculatorProps) {
                 ))}
               </div>
 
-              <div className="mt-4 flex justify-center">
+              <div className="fixed bottom-0 left-0 right-0 p-4 bg-gray-900 border-t border-gray-800 flex justify-center">
                 <motion.button
-                  className="px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-bold text-sm sm:text-base md:text-lg shadow-lg"
+                  className="w-full max-w-[300px] py-4 px-6 rounded-lg font-bold text-lg shadow-lg"
                   style={{ 
                     background: `linear-gradient(to right, ${colors.primary}, ${colors.primary}90)`,
-                    color: 'black'
+                    color: 'black',
+                    boxShadow: `0 4px 6px rgba(0, 0, 0, 0.1)`
                   }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => setShowComparison(false)}
                 >
-                  Close
+                  Close Comparison
                 </motion.button>
               </div>
             </motion.div>
