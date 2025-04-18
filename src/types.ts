@@ -26,4 +26,22 @@ export interface FortuneCardProps {
   isFlipped: boolean;
   onFlip: () => void;
   theme?: Theme;
+  onMintNFT?: (fortune: Fortune) => Promise<void>;
+}
+
+export interface FortuneHistoryProps {
+  fortunes: Fortune[];
+  isOpen: boolean;
+  onClose: () => void;
+  onSelectFortune: (fortune: Fortune) => void;
+  theme?: Theme;
+}
+
+export interface SocialShareProps {
+  fortune: Fortune;
+  theme: Theme;
+}
+
+export interface EducationalContentProps {
+  onClose: () => void;
 }

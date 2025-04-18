@@ -1,112 +1,105 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Scroll } from 'lucide-react';
-import type { Theme } from '../types';
+import { Theme } from '../types';
 
 interface LoadingScreenProps {
-  theme?: Theme;
+  theme: Theme;
 }
 
-export function LoadingScreen({ theme }: LoadingScreenProps) {
-  // Use theme colors or fallback to default
-  const primaryColor = theme?.primaryColor || 'yellow-500';
-  const secondaryColor = theme?.secondaryColor || 'red-800';
-  const textColor = theme?.textColor || 'yellow-400';
-
+export const LoadingScreen: React.FC<LoadingScreenProps> = ({ theme }) => {
   return (
-    <div className="fixed inset-0 bg-black flex flex-col items-center justify-center z-50">
-      {/* Animated background particles */}
-      <div className="absolute inset-0 overflow-hidden">
-        {[...Array(50)].map((_, i) => (
-          <motion.div 
+    <div className="min-h-screen flex flex-col items-center justify-center p-4"
+         style={{ 
+           background: `linear-gradient(to bottom right, ${theme.colors.secondary}90, black)`
+         }}>
+      <div className="w-full max-w-lg mx-auto p-8 rounded-2xl backdrop-blur-md bg-black/40 border-4 shadow-2xl"
+           style={{ 
+             borderColor: theme.colors.primary,
+             boxShadow: `0 25px 50px -12px ${theme.colors.primary}40`
+           }}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center"
+        >
+          <h2 className="text-4xl font-serif mb-6 font-bold drop-shadow-lg tracking-wide"
+              style={{ color: theme.colors.primary }}>
+            Ancient Fortune Teller
+          </h2>
+          <p className="mb-8 text-xl font-medium"
+             style={{ color: theme.colors.text }}>
+            Summoning ancient wisdom...
+          </p>
+          
+          <div className="relative flex justify-center items-center">
+            {/* Main spinner */}
+            <motion.div
+              className="w-28 h-28 border-8 rounded-full"
+              style={{ 
+                borderColor: `${theme.colors.primary}20`,
+                borderTopColor: theme.colors.primary
+              }}
+              animate={{ rotate: 360 }}
+              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+            />
+            
+            {/* Inner spinner */}
+            <motion.div
+              className="absolute w-16 h-16 border-6 rounded-full"
+              style={{ 
+                borderColor: `${theme.colors.text}30`,
+                borderTopColor: theme.colors.text
+              }}
+              animate={{ rotate: -360 }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+            />
+            
+            {/* Center dot */}
+            <div className="absolute w-6 h-6 rounded-full shadow-lg"
+                 style={{ 
+                   backgroundColor: theme.colors.primary,
+                   boxShadow: `0 4px 6px -1px ${theme.colors.primary}50`
+                 }}></div>
+          </div>
+          
+          <motion.p
+            className="mt-8 text-lg italic"
+            style={{ color: `${theme.colors.text}80` }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 1, 0.8, 1] }}
+            transition={{ delay: 1, duration: 3, repeat: Infinity }}
+          >
+            The cards of fate are aligning...
+          </motion.p>
+        </motion.div>
+      </div>
+      
+      {/* Additional decorative elements */}
+      <div className="fixed inset-0 pointer-events-none">
+        {[...Array(10)].map((_, i) => (
+          <motion.div
             key={i}
-            className={`absolute w-1 h-1 bg-${primaryColor}/30 rounded-full`}
-            style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
+            className="absolute w-3 h-3 rounded-full"
+            style={{ backgroundColor: `${theme.colors.primary}30` }}
+            initial={{ 
+              x: Math.random() * window.innerWidth, 
+              y: Math.random() * window.innerHeight,
+              scale: Math.random() * 0.5 + 0.5,
+              opacity: Math.random() * 0.4 + 0.1
             }}
-            animate={{
-              opacity: [0.1, 0.5, 0.1],
-              scale: [0.5, 1, 0.5],
-              y: [0, -20, 0],
+            animate={{ 
+              y: [null, Math.random() * window.innerHeight],
+              opacity: [null, Math.random() * 0.3 + 0.1]
             }}
-            transition={{
+            transition={{ 
+              duration: Math.random() * 15 + 8, 
               repeat: Infinity,
-              duration: 2 + Math.random() * 3,
-              delay: Math.random() * 2,
+              repeatType: "reverse"
             }}
           />
         ))}
       </div>
-      
-      {/* Main loading content */}
-      <div className="relative z-10 flex flex-col items-center">
-        {/* Outer ring */}
-        <motion.div 
-          className={`w-32 h-32 border-4 border-${primaryColor} border-t-transparent rounded-full mb-8`}
-          animate={{ rotate: 360 }}
-          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-        />
-        
-        {/* Inner ring */}
-        <motion.div 
-          className={`absolute w-24 h-24 border-4 border-${secondaryColor} border-b-transparent rounded-full`}
-          animate={{ rotate: -360 }}
-          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-        />
-        
-        {/* Center icon */}
-        <motion.div 
-          className="absolute"
-          animate={{ 
-            scale: [1, 1.1, 1],
-            rotate: [0, 5, 0]
-          }}
-          transition={{ 
-            duration: 2,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        >
-          <Scroll className={`w-12 h-12 text-${primaryColor}`} />
-        </motion.div>
-        
-        {/* Title */}
-        <motion.h2 
-          className={`text-3xl text-${primaryColor} font-serif mt-8 mb-4`}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          Ancient Fortune Teller
-        </motion.h2>
-        
-        {/* Loading text */}
-        <motion.div
-          className="flex items-center space-x-2"
-          animate={{ opacity: [0.5, 1, 0.5] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          <p className={`text-${textColor} italic`}>Consulting the oracle</p>
-          <div className="flex space-x-1">
-            {[0, 1, 2].map((dot) => (
-              <motion.div
-                key={dot}
-                className={`w-2 h-2 rounded-full bg-${primaryColor}`}
-                animate={{ 
-                  opacity: [0, 1, 0],
-                  y: [0, -5, 0]
-                }}
-                transition={{
-                  duration: 1.5,
-                  repeat: Infinity,
-                  delay: dot * 0.3,
-                }}
-              />
-            ))}
-          </div>
-        </motion.div>
-      </div>
     </div>
   );
-} 
+}; 

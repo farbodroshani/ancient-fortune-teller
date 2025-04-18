@@ -9,33 +9,41 @@ import { Volume2, VolumeX, Share2, History, X, BookOpen } from 'lucide-react';
 import { ThemeSelector, themes } from './components/ThemeSelector';
 import { FortuneHistory } from './components/FortuneHistory';
 import type { Fortune, Theme } from './types';
-import { DharmaCalculator } from './components/DharmaCalculator';
 import { fetchRandomFortune } from './api/fortuneApi';
 import { SocialShare } from './components/SocialShare';
 import { EducationalContent } from './components/EducationalContent';
+import { Web3Service } from './services/web3Service';
+import { DharmaPage } from './components/DharmaPage';
+import { MainPage } from './components/MainPage';
+import { LoadingScreen } from './components/LoadingScreen';
 
-// Theme music
-const themeMusic = new Howl({
-  src: ['/assets/audio/theme.mp3'],
-  volume: 0.3,
-  loop: true,
-  autoplay: false,
-  onload: () => {
-    console.log('Theme music loaded successfully');
-  },
-  onloaderror: (id, error) => {
-    console.error('Error loading theme music:', error);
-  },
-  onplayerror: (id, error) => {
-    console.error('Error playing theme music:', error);
-  },
-  onplay: () => {
-    console.log('Theme music started playing');
-  },
-  onpause: () => {
-    console.log('Theme music paused');
-  }
-});
+// Theme music - handle missing file gracefully
+let themeMusic: Howl | null = null;
+try {
+  themeMusic = new Howl({
+    src: ['/assets/audio/theme.mp3'],
+    volume: 0.3,
+    loop: true,
+    autoplay: false,
+    onload: () => {
+      console.log('Theme music loaded successfully');
+    },
+    onloaderror: (id, error) => {
+      console.error('Error loading theme music:', error);
+    },
+    onplayerror: (id, error) => {
+      console.error('Error playing theme music:', error);
+    },
+    onplay: () => {
+      console.log('Theme music started playing');
+    },
+    onpause: () => {
+      console.log('Theme music paused');
+    }
+  });
+} catch (error) {
+  console.error('Failed to initialize theme music:', error);
+}
 
 // Particle component for visual effects
 const Particles = () => {
@@ -83,135 +91,62 @@ const getRandomFortune = async (category: 'all' | 'love' | 'career' | 'health' |
   }
 };
 
-// Loading screen component
-const LoadingScreen = ({ theme }: { theme: Theme }) => {
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4"
-         style={{ 
-           background: `linear-gradient(to bottom right, #9b2c2c, #7f1d1d, black)`
-         }}>
-      <div className="w-full max-w-lg mx-auto p-8 rounded-2xl backdrop-blur-md bg-black/40 border-4 shadow-2xl"
-           style={{ 
-             borderColor: theme.colors.primary,
-             boxShadow: `0 25px 50px -12px ${theme.colors.primary}40`
-           }}>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center"
-        >
-          <h2 className="text-4xl font-serif mb-6 font-bold drop-shadow-lg tracking-wide"
-              style={{ color: theme.colors.primary }}>
-            Ancient Fortune Teller
-          </h2>
-          <p className="mb-8 text-xl font-medium"
-             style={{ color: theme.colors.text }}>
-            Summoning ancient wisdom...
-          </p>
-          
-          <div className="relative flex justify-center items-center">
-            {/* Main spinner */}
-            <motion.div
-              className="w-28 h-28 border-8 rounded-full"
-              style={{ 
-                borderColor: `${theme.colors.primary}20`,
-                borderTopColor: theme.colors.primary
-              }}
-              animate={{ rotate: 360 }}
-              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-            />
-            
-            {/* Inner spinner */}
-            <motion.div
-              className="absolute w-16 h-16 border-6 rounded-full"
-              style={{ 
-                borderColor: `${theme.colors.text}30`,
-                borderTopColor: theme.colors.text
-              }}
-              animate={{ rotate: -360 }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-            />
-            
-            {/* Center dot */}
-            <div className="absolute w-6 h-6 rounded-full shadow-lg"
-                 style={{ 
-                   backgroundColor: theme.colors.primary,
-                   boxShadow: `0 4px 6px -1px ${theme.colors.primary}50`
-                 }}></div>
-          </div>
-          
-          <motion.p
-            className="mt-8 text-lg italic"
-            style={{ color: `${theme.colors.text}80` }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 1, 0.8, 1] }}
-            transition={{ delay: 1, duration: 3, repeat: Infinity }}
-          >
-            The cards of fate are aligning...
-          </motion.p>
-        </motion.div>
-      </div>
-      
-      {/* Additional decorative elements */}
-      <div className="fixed inset-0 pointer-events-none">
-        {[...Array(10)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-3 h-3 rounded-full"
-            style={{ backgroundColor: `${theme.colors.primary}30` }}
-            initial={{ 
-              x: Math.random() * window.innerWidth, 
-              y: Math.random() * window.innerHeight,
-              scale: Math.random() * 0.5 + 0.5,
-              opacity: Math.random() * 0.4 + 0.1
-            }}
-            animate={{ 
-              y: [null, Math.random() * window.innerHeight],
-              opacity: [null, Math.random() * 0.3 + 0.1]
-            }}
-            transition={{ 
-              duration: Math.random() * 15 + 8, 
-              repeat: Infinity,
-              repeatType: "reverse"
-            }}
-          />
-        ))}
-      </div>
-    </div>
-  );
-};
-
 function App() {
-  // Get initial fortune from localStorage or a random fortune
   const [fortune, setFortune] = useState<Fortune>(() => {
     const saved = localStorage.getItem('lastFortune');
-    return saved ? JSON.parse(saved) : fortunes[Math.floor(Math.random() * fortunes.length)];
+    return saved ? JSON.parse(saved) : fortunes[0];
   });
   const [isFlipped, setIsFlipped] = useState(false);
-  const [currentBg, setCurrentBg] = useState(() => {
-    const saved = localStorage.getItem('currentBg');
-    return saved ? parseInt(saved) : 0;
-  });
+  const [currentBg, setCurrentBg] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'love' | 'career' | 'health' | 'luck'>('all');
   const [showCategoryFilter, setShowCategoryFilter] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [showShareModal, setShowShareModal] = useState(false);
-  const [currentTheme, setCurrentTheme] = useState(() => {
-    const saved = localStorage.getItem('selectedTheme');
-    return saved || 'classic';
-  });
-  const [fortuneHistory, setFortuneHistory] = useState<Fortune[]>(() => {
-    const saved = localStorage.getItem('fortuneHistory');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [currentTheme, setCurrentTheme] = useState<Theme>(themes[0]);
   const [showHistory, setShowHistory] = useState(false);
-  const [showDharmaCalculator, setShowDharmaCalculator] = useState(false);
+  const [fortuneHistory, setFortuneHistory] = useState<Fortune[]>([]);
+  const [web3Service, setWeb3Service] = useState<Web3Service | null>(null);
+  const [walletAddress, setWalletAddress] = useState<string>('');
   const [isGeneratingFortune, setIsGeneratingFortune] = useState(false);
+  const [currentPage, setCurrentPage] = useState<'main' | 'fortune' | 'dharma'>('main');
   const [showEducationalContent, setShowEducationalContent] = useState(false);
 
-  // Load background images
+  // Reset fortune card state when entering fortune page
+  useEffect(() => {
+    if (currentPage === 'fortune') {
+      setIsFlipped(false);
+    }
+  }, [currentPage]);
+
+  // Initialize Web3Service with error handling
+  useEffect(() => {
+    try {
+      const service = new Web3Service('0x123...'); // Replace with your contract address
+      setWeb3Service(service);
+    } catch (error) {
+      console.error('Failed to initialize Web3Service:', error);
+    }
+  }, []);
+
+  const handleMintNFT = async (fortune: Fortune) => {
+    if (!web3Service) return;
+    
+    try {
+      if (!walletAddress) {
+        const address = await web3Service.connectWallet();
+        setWalletAddress(address);
+      }
+      
+      const txHash = await web3Service.mintFortuneNFT(fortune, walletAddress!);
+      alert(`NFT minted successfully! Transaction: ${txHash}`);
+    } catch (error) {
+      console.error('Failed to mint NFT:', error);
+      alert('Failed to mint NFT. Please try again.');
+    }
+  };
+
+  // Load background images and initialize app
   useEffect(() => {
     const loadAssets = async () => {
       try {
@@ -227,20 +162,6 @@ function App() {
     };
     
     loadAssets();
-    
-    // Load initial fortune if needed
-    const loadInitialFortune = async () => {
-      if (!fortune) {
-        try {
-          const initialFortune = await getRandomFortune();
-          setFortune(initialFortune);
-        } catch (error) {
-          console.error("Failed to load initial fortune:", error);
-        }
-      }
-    };
-    
-    loadInitialFortune();
   }, []);
 
   useEffect(() => {
@@ -248,7 +169,7 @@ function App() {
       localStorage.setItem('lastFortune', JSON.stringify(fortune));
     }
     localStorage.setItem('currentBg', currentBg.toString());
-    localStorage.setItem('selectedTheme', currentTheme);
+    localStorage.setItem('selectedTheme', currentTheme.id);
   }, [fortune, currentBg, currentTheme]);
 
   // Handle audio
@@ -257,18 +178,18 @@ function App() {
       try {
         if (!isMuted) {
           // Check if the audio is already playing
-          if (!themeMusic.playing()) {
+          if (!themeMusic?.playing()) {
             // Add a small delay to ensure the audio context is ready
             await new Promise(resolve => setTimeout(resolve, 1000));
             try {
-              themeMusic.play();
+              themeMusic?.play();
               console.log('Theme music started playing');
             } catch (error) {
               console.error('Error playing theme music:', error);
             }
           }
         } else {
-          themeMusic.pause();
+          themeMusic?.pause();
           console.log('Theme music paused');
         }
       } catch (error) {
@@ -279,7 +200,7 @@ function App() {
     handleAudio();
 
     return () => {
-      themeMusic.pause();
+      themeMusic?.pause();
     };
   }, [isMuted]);
 
@@ -347,7 +268,7 @@ function App() {
   };
 
   const handleThemeChange = (themeId: string) => {
-    setCurrentTheme(themeId);
+    setCurrentTheme(themes.find(t => t.id === themeId) || themes[0]);
   };
 
   const toggleHistory = () => {
@@ -366,11 +287,25 @@ function App() {
   };
 
   if (isLoading) {
-    return <LoadingScreen theme={themes.find(t => t.id === currentTheme) || themes[0]} />;
+    return <LoadingScreen theme={currentTheme} />;
+  }
+
+  if (currentPage === 'main') {
+    return (
+      <MainPage 
+        theme={currentTheme}
+        onSelectFortune={() => setCurrentPage('fortune')}
+        onSelectDharma={() => setCurrentPage('dharma')}
+      />
+    );
+  }
+
+  if (currentPage === 'dharma') {
+    return <DharmaPage theme={currentTheme} onBack={() => setCurrentPage('main')} />;
   }
 
   // Get current theme styles
-  const activeTheme = themes.find(t => t.id === currentTheme) || themes[0];
+  const activeTheme = currentTheme;
   
   const categoryColors = {
     all: 'bg-gradient-to-r from-purple-600 to-indigo-600',
@@ -395,7 +330,7 @@ function App() {
              backgroundColor: `rgba(${activeTheme.id === 'classic' ? '0, 0, 0' : '30, 20, 60'}, 0.5)`
            }}>
         {/* Main content container */}
-        <div className="w-full max-w-5xl mx-auto p-4 sm:p-6 rounded-lg backdrop-blur-sm border-2 shadow-lg"
+        <div className="w-full max-w-6xl mx-auto p-4 sm:p-6 rounded-lg backdrop-blur-sm border-2 shadow-lg"
              style={{ 
                backgroundColor: `${activeTheme.colors.secondary}80`,
                borderColor: activeTheme.colors.primary
@@ -404,6 +339,16 @@ function App() {
           <div className="relative">
             <div className="flex flex-col sm:flex-row justify-between items-center mb-4 sm:mb-6 gap-4">
               <div className="flex items-center space-x-4">
+                <motion.button
+                  className="text-white bg-black/80 backdrop-blur-sm px-3 py-1 rounded-full text-sm border"
+                  style={{ borderColor: `${activeTheme.colors.primary}50` }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setCurrentPage('main')}
+                >
+                  Back to Main
+                </motion.button>
+                
                 <motion.button
                   className="text-white bg-black/80 backdrop-blur-sm px-3 py-1 rounded-full text-sm border"
                   style={{ borderColor: `${activeTheme.colors.primary}50` }}
@@ -451,10 +396,20 @@ function App() {
                 >
                   <History size={20} />
                 </motion.button>
+
+                <motion.button
+                  className="text-white bg-black/80 backdrop-blur-sm p-2 rounded-full hover:bg-black/90 border"
+                  style={{ borderColor: `${activeTheme.colors.primary}50` }}
+                  onClick={() => setShowEducationalContent(true)}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <BookOpen size={20} />
+                </motion.button>
               </div>
             </div>
 
-            {/* Category filter - Moved here, inside the relative container */}
+            {/* Category filter */}
             <AnimatePresence>
               {showCategoryFilter && (
                 <motion.div 
@@ -497,97 +452,60 @@ function App() {
           </div>
 
           {/* Main content */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 relative">
-            {/* Left column - Fortune Card */}
-            <div className="space-y-4 sm:space-y-6">
-              <motion.h1 
-                className="text-3xl sm:text-4xl md:text-5xl font-serif text-center drop-shadow-lg font-bold"
-                style={{ color: activeTheme.colors.primary }}
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-              >
-                Ancient Fortune Teller
-              </motion.h1>
-              
-              <div className="flex items-center justify-center">
-                <FortuneCard 
-                  fortune={fortune} 
-                  isFlipped={isFlipped} 
-                  onFlip={handleFlip} 
-                  theme={activeTheme}
-                />
-              </div>
-              
-              <div className="flex justify-center mt-4 sm:mt-8">
-                <SealButton 
-                  onClick={generateFortune} 
-                  disabled={isGeneratingFortune}
-                  theme={activeTheme}
-                  isLoading={isGeneratingFortune}
-                />
-              </div>
-              
-              <motion.p 
-                className="text-center max-w-md mx-auto p-3 rounded-md bg-black/80 border font-bold text-base sm:text-lg shadow-lg"
-                style={{ 
-                  color: activeTheme.colors.primary,
-                  borderColor: `${activeTheme.colors.primary}50`
-                }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3, duration: 0.5 }}
-              >
-                {isFlipped ? "Click the fortune card to flip it back" : "Click the seal to reveal your fortune"}
-              </motion.p>
-
-              {/* Theme selector and background switcher */}
-              <div className="flex flex-wrap justify-center gap-3 mt-4 sm:mt-6 mb-8 z-10">
-                <ThemeSelector currentTheme={currentTheme} onSelectTheme={handleThemeChange} />
-                <BackgroundSwitcher
-                  currentBg={currentBg}
-                  onNext={nextBackground}
-                  onPrev={prevBackground}
-                  theme={activeTheme}
-                />
-              </div>
+          <div className="flex flex-col items-center justify-center space-y-8">
+            <motion.h1 
+              className="text-4xl sm:text-5xl md:text-6xl font-serif text-center drop-shadow-lg font-bold"
+              style={{ color: activeTheme.colors.primary }}
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              Ancient Fortune Teller
+            </motion.h1>
+            
+            <div className="w-full max-w-2xl">
+              <FortuneCard 
+                fortune={fortune} 
+                isFlipped={isFlipped} 
+                onFlip={handleFlip} 
+                theme={activeTheme}
+                onMintNFT={handleMintNFT}
+              />
             </div>
+            
+            <div className="flex justify-center mt-4">
+              <SealButton 
+                onClick={generateFortune} 
+                disabled={isGeneratingFortune}
+                theme={activeTheme}
+                isLoading={isGeneratingFortune}
+              />
+            </div>
+            
+            <motion.p 
+              className="text-center max-w-md mx-auto p-3 rounded-md bg-black/80 border font-bold text-base sm:text-lg shadow-lg"
+              style={{ 
+                color: activeTheme.colors.primary,
+                borderColor: `${activeTheme.colors.primary}50`
+              }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+            >
+              {isFlipped ? "Click the fortune card to flip it back" : "Click the seal to reveal your fortune"}
+            </motion.p>
 
-            {/* Right column - Dharma Calculator */}
-            <div className="flex flex-col justify-start pt-8 sm:pt-16">
-              <div className="w-full max-w-md mx-auto rounded-xl backdrop-blur-md border-4 shadow-2xl"
-                   style={{ 
-                     background: `linear-gradient(to bottom right, ${activeTheme.colors.secondary}90, black)`,
-                     borderColor: activeTheme.colors.primary,
-                     boxShadow: `0 25px 50px -12px ${activeTheme.colors.primary}20`
-                   }}>
-                <DharmaCalculator theme={activeTheme} />
-              </div>
+            {/* Theme selector and background switcher */}
+            <div className="flex flex-wrap justify-center gap-3 mt-4">
+              <ThemeSelector currentTheme={currentTheme.id} onSelectTheme={handleThemeChange} />
+              <BackgroundSwitcher
+                currentBg={currentBg}
+                onNext={nextBackground}
+                onPrev={prevBackground}
+                theme={activeTheme}
+              />
             </div>
           </div>
-
-          {/* Add Learn More button - Moved to left side */}
-          <button
-            onClick={() => setShowEducationalContent(true)}
-            className="fixed bottom-4 left-4 p-3 bg-purple-600 hover:bg-purple-700 text-white rounded-full shadow-lg transition-colors duration-300 z-[100]"
-            style={{
-              position: 'fixed',
-              bottom: '1rem',
-              left: '1rem',
-              zIndex: 100,
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.5)'
-            }}
-            aria-label="Learn about fortune telling methods"
-          >
-            <BookOpen className="w-6 h-6" />
-          </button>
-
-          {/* Educational Content Modal */}
-          {showEducationalContent && (
-            <div className="fixed inset-0 z-[101]">
-              <EducationalContent onClose={() => setShowEducationalContent(false)} />
-            </div>
-          )}
         </div>
 
         {/* Modals */}
@@ -643,6 +561,13 @@ function App() {
                 <SocialShare fortune={fortune} theme={activeTheme} />
               </motion.div>
             </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Educational Content Modal */}
+        <AnimatePresence>
+          {showEducationalContent && (
+            <EducationalContent onClose={() => setShowEducationalContent(false)} />
           )}
         </AnimatePresence>
       </div>

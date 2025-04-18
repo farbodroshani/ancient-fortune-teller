@@ -4,14 +4,19 @@ A mystical web application that provides personalized fortunes, dharma calculati
 
 ## Features
 
-- 🔮 Interactive fortune cards with beautiful animations
-- 🌙 Mystical elements including zodiac signs, lunar phases, and celestial influences
-- 📊 Dharma Calculator for spiritual path discovery
+- 🔮 Interactive fortune cards with beautiful animations and category-based fortunes
+- 📊 Dharma Calculator for spiritual path discovery and life purpose
+- 📚 Ancient Wisdom Guide with educational content about:
+  - Dharma number calculations
+  - Fortune telling methods (Tarot, I Ching, Astrology)
+  - Historical context and cultural significance
+  - Key spiritual terms and concepts
 - 🎨 Customizable themes and backgrounds
 - 📱 Responsive design for all devices
 - 🔊 Ambient sound effects and music
 - 📜 Fortune history tracking
 - 📤 Social media sharing
+- 🎯 Category-based fortune selection (Love, Career, Health, Luck)
 
 ## Technologies Used
 
@@ -21,6 +26,7 @@ A mystical web application that provides personalized fortunes, dharma calculati
 - Framer Motion
 - Howler.js
 - Lucide Icons
+- Vite
 
 ## Getting Started
 
@@ -39,18 +45,44 @@ npm install
 npm run dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+4. Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ## Project Structure
 
 ```
 src/
 ├── api/           # API implementations and fortune generation
-├── components/    # React components
+│   ├── MainPage.tsx      # Main landing page
+│   ├── FortuneCard.tsx   # Interactive fortune card
+│   ├── DharmaPage.tsx    # Dharma calculator
+│   ├── LoadingScreen.tsx # Loading animation
+│   └── ...        # Other components
 ├── data/          # Static data and configurations
 ├── types/         # TypeScript type definitions
 └── App.tsx        # Main application component
 ```
+
+## Key Features in Detail
+
+### Fortune Cards
+- Beautiful card flip animations
+- Category-based fortunes (Love, Career, Health, Luck)
+- Interactive card reveal
+- Fortune history tracking
+- Social sharing capabilities
+
+### Dharma Calculator
+- Birth date-based calculations
+- Detailed life path analysis
+- Spiritual guidance
+- Interactive number interpretation
+
+### Ancient Wisdom Guide
+- Comprehensive educational content
+- Historical context of divination methods
+- Step-by-step Dharma calculation guide
+- Glossary of spiritual terms
+- Cultural significance explanations
 
 ## Contributing
 
