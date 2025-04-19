@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, User, Sparkles, MapPin, Clock, Save, Users, Loader2 } from 'lucide-react';
+import { Calendar, User, Sparkles, MapPin, Clock, Save, Users, Loader2, ArrowLeft } from 'lucide-react';
 import type { Theme } from '../types';
 import { calculateDharmaNumber, getDharmaInterpretation } from '../api/fortuneApi';
 import { LocationInput } from './LocationInput';
@@ -206,12 +206,14 @@ export function DharmaCalculator({ theme }: DharmaCalculatorProps) {
       >
         <h2 className="text-3xl sm:text-4xl font-space-grotesk mb-4 text-center font-bold drop-shadow-lg tracking-wide"
             style={{ color: colors.primary }}>
-          <span className="inline-block">
-            <Sparkles className="inline-block mr-2 mb-1" size={24} style={{ color: colors.primary }} />
-          </span>
-          Discover Your Dharma
-          <span className="inline-block">
-            <Sparkles className="inline-block ml-2 mb-1" size={24} style={{ color: colors.primary }} />
+          <span className="flex-1 text-center">
+            <span className="inline-block">
+              <Sparkles className="inline-block mr-2 mb-1" size={24} style={{ color: colors.primary }} />
+            </span>
+            Discover Your Dharma
+            <span className="inline-block">
+              <Sparkles className="inline-block ml-2 mb-1" size={24} style={{ color: colors.primary }} />
+            </span>
           </span>
         </h2>
         

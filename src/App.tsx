@@ -296,6 +296,7 @@ function App() {
         theme={currentTheme}
         onSelectFortune={() => setCurrentPage('fortune')}
         onSelectDharma={() => setCurrentPage('dharma')}
+        onThemeChange={handleThemeChange}
       />
     );
   }

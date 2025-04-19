@@ -16,7 +16,7 @@ export const DharmaPage: React.FC<DharmaPageProps> = ({ theme, onBack }) => {
            background: `linear-gradient(to bottom right, ${theme.colors.secondary}90, black)`
          }}>
       <motion.button
-        className="absolute top-4 left-4 p-2 rounded-full bg-black/80 text-white hover:bg-black/90 border"
+        className="absolute top-4 left-4 p-2 rounded-full bg-black/80 text-white hover:bg-black/90 border z-50"
         style={{ borderColor: `${theme.colors.primary}50` }}
         onClick={onBack}
         whileHover={{ scale: 1.05 }}
